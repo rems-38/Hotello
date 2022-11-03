@@ -1,6 +1,7 @@
 #include <stdbool.h>
 #include "../utils/utils.h"
 
+
 int compute_vertical_moves(char game_board[8][8], int pion_x, int pion_y, char actual_player, char (*legal_moves)[2]) {
     int vm_index = 0;  // Index pour le tableau des mouvements possibles
     if(game_board[pion_x][pion_y] != actual_player) {
@@ -93,9 +94,90 @@ int compute_horizontal_moves(char game_board[8][8], int pion_x, int pion_y, char
     return hm_index;
 }
 
-// int compute_diagonal_moves(char game_board[8][8], int pion_x, int pion_y, char actual_player, char (*legal_moves)[2]) {
-// TODO
-// }
+int compute_diagonal_moves(char game_board[8][8], int pion_x, int pion_y, char actual_player, char (*legal_moves)[2]) {
+    int dm_index = 0;  // Index pour le tableau des mouvements possibles
+    if(game_board[pion_x][pion_y] != actual_player) {
+        return dm_index;
+    }
+    bool adv_pion_found = false;
+    for(int i = pion_x+1, j = pion_y+1; i < 8 && j < 8; i++, j++) { // Dir : bas-droite
+        if(game_board[i][j] == actual_player) {
+            break;
+        }
+        if(!adv_pion_found) {
+            if(game_board[i][j] == get_opponent(actual_player)) {
+                adv_pion_found = true;
+            }
+        }
+        else {
+            if(game_board[i][j] == '-') {
+                legal_moves[dm_index][0] = i;
+                legal_moves[dm_index][1] = j;
+                dm_index++;
+                break;
+            }
+        }  
+    }
+    adv_pion_found = false;
+    for(int i = pion_x-1, j = pion_y-1; i >= 0 && j >= 0; i--, j--) { // Dir : haut-gauche
+        if(game_board[i][j] == actual_player) {
+            break;
+        }
+        if(!adv_pion_found) {
+            if(game_board[i][j] == get_opponent(actual_player)) {
+                adv_pion_found = true;
+            }
+        }
+        else {
+            if(game_board[i][j] == '-') {
+                legal_moves[dm_index][0] = i;
+                legal_moves[dm_index][1] = j;
+                dm_index++;
+                break;
+            }
+        }  
+    }
+    adv_pion_found = false;
+    for(int i = pion_x-1, j = pion_y+1; i < 8 && j >= 0; i--, j++) { // Dir : bas-gauche
+        if(game_board[i][j] == actual_player) {
+            break;
+        }
+        if(!adv_pion_found) {
+            if(game_board[i][j] == get_opponent(actual_player)) {
+                adv_pion_found = true;
+            }
+        }
+        else {
+            if(game_board[i][j] == '-') {
+                legal_moves[dm_index][0] = i;
+                legal_moves[dm_index][1] = j;
+                dm_index++;
+                break;
+            }
+        }
+    }
+    adv_pion_found = false;
+    for(int i = pion_x+1, j = pion_y-1; i < 8 && j >= 0; i++, j--) { // Dir : haut-droite
+        if(game_board[i][j] == actual_player) {
+            break;
+        }
+        if(!adv_pion_found) {
+            if(game_board[i][j] == get_opponent(actual_player)) {
+                adv_pion_found = true;
+            }
+        }
+        else {
+            if(game_board[i][j] == get_opponent(actual_player)) break;
+            if(game_board[i][j] == '-') {
+                legal_moves[dm_index][0] = i;
+                legal_moves[dm_index][1] = j;
+                dm_index++;
+                break;
+            }
+        }
+    }
+
+}
 
 void compute_legal_moves(char game_board[8][8], char actual_player, char (*legal_moves_board)[8]) {
     char legal_moves[64][2];
@@ -119,13 +201,13 @@ void compute_legal_moves(char game_board[8][8], char actual_player, char (*legal
                     lm_index++;
                 }
 
-                // char diagonal_moves[2][2];
-                // int dm_index = compute_diagonal_moves(game_board, i, j, actual_player, diagonal_moves);
-                // for(int k = 0; k < dm_index; k++) {
-                //     legal_moves[lm_index][0] = diagonal_moves[k][0];
-                //     legal_moves[lm_index][1] = diagonal_moves[k][1];
-                //     lm_index++;
-                // }
+                char diagonal_moves[2][2];
+                int dm_index = compute_diagonal_moves(game_board, i, j, actual_player, diagonal_moves);
+                for(int k = 0; k < dm_index; k++) {
+                    legal_moves[lm_index][0] = diagonal_moves[k][0];
+                    legal_moves[lm_index][1] = diagonal_moves[k][1];
+                    lm_index++;
+                }
                 
             }
         }
