@@ -1,38 +1,6 @@
-#include "functions.h"
+#include <stdbool.h>
+#include "../utils/utils.h"
 
-char *init_game_board(char game_board[8][8]) {
-    // Remplir tout le tableau de tiret (case vide)
-    for(int i = 0; i < 8; i++) {
-        for(int j = 0; j < 8; j++) {
-            game_board[i][j] = '-';
-        }
-    }
-
-    // Faire l'initialisation des pions
-    game_board[3][3] = 'X';
-    game_board[3][4] = 'O';
-    game_board[4][3] = 'O';
-    game_board[4][4] = 'X';
-}
-
-void print_game(char game_board[8][8]) {
-    for(int i = 0; i < 8; i++) {
-        for(int j = 0; j < 8; j++) {
-            printf("%c", game_board[i][j]);
-        }
-        printf("\n");
-    }
-}
-
-char get_adv_pion(char pion) {
-    if(pion == 'X') {
-        return 'O';
-    } else {
-        return 'X';
-    }
-}
-
-// TODO : Mettre les fonctions compute dans un fichier à part
 int compute_vertical_moves(char game_board[8][8], int pion_x, int pion_y, char actual_player, char (*legal_moves)[2]) {
     int vm_index = 0;  // Index pour le tableau des mouvements possibles
     if(game_board[pion_x][pion_y] != actual_player) {
@@ -44,7 +12,7 @@ int compute_vertical_moves(char game_board[8][8], int pion_x, int pion_y, char a
             break;
         }
         if(!adv_pion_found) {
-            if(game_board[pion_x][i] == get_adv_pion(actual_player)) {
+            if(game_board[pion_x][i] == get_opponent(actual_player)) {
                 adv_pion_found = true;
             }
         }
@@ -63,7 +31,7 @@ int compute_vertical_moves(char game_board[8][8], int pion_x, int pion_y, char a
             break;
         }
         if(!adv_pion_found) {
-            if(game_board[pion_x][i] == get_adv_pion(actual_player)) {
+            if(game_board[pion_x][i] == get_opponent(actual_player)) {
                 adv_pion_found = true;
             }
         }
@@ -90,7 +58,7 @@ int compute_horizontal_moves(char game_board[8][8], int pion_x, int pion_y, char
             break;
         }
         if(!adv_pion_found) {
-            if(game_board[i][pion_y] == get_adv_pion(actual_player)) {
+            if(game_board[i][pion_y] == get_opponent(actual_player)) {
                 adv_pion_found = true;
             }
         }
@@ -109,7 +77,7 @@ int compute_horizontal_moves(char game_board[8][8], int pion_x, int pion_y, char
             break;
         }
         if(!adv_pion_found) {
-            if(game_board[i][pion_y] == get_adv_pion(actual_player)) {
+            if(game_board[i][pion_y] == get_opponent(actual_player)) {
                 adv_pion_found = true;
             }
         }
@@ -172,21 +140,11 @@ void compute_legal_moves(char game_board[8][8], char actual_player, char (*legal
 }
 
 bool coup_valide(char game_board[8][8], int x, int y, char joueur) {
-    return true;
-}
-
-char *jouer_coup(char game_board[8][8], int x, int y, char joueur) {
-
-    if (coup_valide(game_board, x, y, joueur)) {
-        // Jouer le coup
-
+    char legal_moves_board[8][8];
+    board_copy(game_board, legal_moves_board);
+    compute_legal_moves(game_board, joueur, legal_moves_board);
+    if(legal_moves_board[y][x] == '*') {
+        return true;
     }
-}
-
-void board_copy(char game_board[8][8], char (*game_board_copy)[8]) {
-    for(int i = 0; i < 8; i++) {
-        for(int j = 0; j < 8; j++) {
-            game_board_copy[i][j] = game_board[i][j];
-        }
-    }
+    return false;
 }
