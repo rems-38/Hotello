@@ -55,14 +55,3 @@ char get_opponent(char pion) {
     }
 }
 
-
-
-
-void make_move(char game_board[8][8], int x, int y, char joueur) {
-
-    if (coup_valide(game_board, x, y, joueur)) {
-        // Jouer le coup
-        // Idée : diviser en 3 fonctions : vertical, horizontal, diagonal
-    }
-}
-

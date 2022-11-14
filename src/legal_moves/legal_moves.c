@@ -189,9 +189,8 @@ bool is_coord_present(int (*array)[2], int len, int coord_x, int coord_y) {
 }
 
 
-void compute_legal_moves(char game_board[8][8], char actual_player, char (*legal_moves_board)[8]) {
+void compute_legal_moves(char game_board[8][8], char actual_player, char (*legal_moves_board)[8], int moves_origins[8][8][9][2]) {
     char legal_moves[64][2];
-    int moves_origins[8][8][9][2];
     for(int i = 0; i < 8; i++) {
         for(int j = 0; j < 8; j++) {
             moves_origins[i][j][0][0] = 0;
@@ -278,18 +277,6 @@ void compute_legal_moves(char game_board[8][8], char actual_player, char (*legal
         }
     }
 
-    for(int i = 0; i < 8; i++) {
-        for(int j = 0; j < 8; j++) {
-            if(moves_origins[j][i][0][0] > 0) {
-                printf("Origins of (%d, %d) : \n", i, j);
-                for(int k = 1; k < moves_origins[j][i][0][0]; k++) {
-                    printf(" - (%d, %d)\n", moves_origins[j][i][k][0], moves_origins[j][i][k][1]);
-                }
-            }
-            
-        }
-    }
-
     for(int i = 0; i < lm_index; i++) {
         legal_moves_board[legal_moves[i][1]][legal_moves[i][0]] = '*';
         // printf("%d %d\n", legal_moves[i][0], legal_moves[i][1]); // DEBUG
@@ -300,8 +287,9 @@ void compute_legal_moves(char game_board[8][8], char actual_player, char (*legal
 
 bool coup_valide(char game_board[8][8], int x, int y, char joueur) {
     char legal_moves_board[8][8];
+    int moves_origins[8][8][9][2];
     board_copy(game_board, legal_moves_board);
-    compute_legal_moves(game_board, joueur, legal_moves_board);
+    compute_legal_moves(game_board, joueur, legal_moves_board, moves_origins);
     if(legal_moves_board[y][x] == '*') {
         return true;
     }
