@@ -19,9 +19,6 @@ bool proceed_move(char game_board[8][8], char player, int target_x, int target_y
     int moves_origins[8][8][9][2];
     board_copy(game_board, legal_moves_board);
     compute_legal_moves(game_board, player, legal_moves_board, moves_origins);
-    // printf("(%d %d)\n", target_x, target_y);
-    // printf("(%d %d)\n\n", moves_origins[target_y][target_x][1][0], moves_origins[target_y][target_x][1][1]);
-    print_game(legal_moves_board);
     if(legal_moves_board[target_y][target_x] == '*') {
         make_move(game_board, target_x, target_y, player, moves_origins);
         return true;
@@ -50,7 +47,7 @@ void init_game_board_from_string(char game_board[8][8], char *game_board_moves) 
 
 int main()
 {
-    char game_board_moves[] = "E6D6C4F4F5D3F3G5C6C5F6G6E3G4B6D2E2C2G3E7F7E8B1C3B2D7C7A1";
+    char game_board_moves[] = "E6D6C5F4F5F6G5C4D3E3D7C6G4C3C7D8C8F3E8E7G3H4F8H2D2C2F7E1H3H5H1G6H6B8A8G7H8G8G2F2G1E2B3B4F1";
     init_game_board_from_string(game_board, game_board_moves);
     print_game(game_board);
 

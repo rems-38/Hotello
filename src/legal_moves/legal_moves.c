@@ -212,7 +212,7 @@ void compute_legal_moves(char game_board[8][8], char actual_player, char (*legal
                 char vertical_moves[2][2];
                 int vm_index = compute_vertical_moves(game_board, x, y, actual_player, vertical_moves);
                 for(int k = 0; k < vm_index; k++) {
-                    printf("Vertical move : (%d %d) with origin (%d %d)\n", vertical_moves[k][0], vertical_moves[k][1], x, y);
+                    // printf("Vertical move : (%d %d) with origin (%d %d)\n", vertical_moves[k][0], vertical_moves[k][1], x, y); // DEBUG
                     int move_x = vertical_moves[k][0];
                     int move_y = vertical_moves[k][1];
                     legal_moves[lm_index][0] = move_x;
@@ -229,7 +229,7 @@ void compute_legal_moves(char game_board[8][8], char actual_player, char (*legal
                 char horizontal_moves[2][2];
                 int hm_index = compute_horizontal_moves(game_board, x, y, actual_player, horizontal_moves);
                 for(int k = 0; k < hm_index; k++) {
-                    printf("Horizontal move : (%d %d) with origin : (%d %d)\n", horizontal_moves[k][0], horizontal_moves[k][1], x, y);
+                    // printf("Horizontal move : (%d %d) with origin : (%d %d)\n", horizontal_moves[k][0], horizontal_moves[k][1], x, y); // DEBUG
                     int move_x = horizontal_moves[k][0];
                     int move_y = horizontal_moves[k][1];
                     legal_moves[lm_index][0] = move_x;
@@ -246,7 +246,7 @@ void compute_legal_moves(char game_board[8][8], char actual_player, char (*legal
                 char diagonal_moves[4][2];
                 int dm_index = compute_diagonal_moves(game_board, x, y, actual_player, diagonal_moves);
                 for(int k = 0; k < dm_index; k++) {
-                    printf("Diagonal move : (%d %d) with origin : (%d %d)\n", diagonal_moves[k][0], diagonal_moves[k][1], x, y);
+                    // printf("Diagonal move : (%d %d) with origin : (%d %d)\n", diagonal_moves[k][0], diagonal_moves[k][1], x, y); // DEBUG
                     int move_x = diagonal_moves[k][0];
                     int move_y = diagonal_moves[k][1];
                     
