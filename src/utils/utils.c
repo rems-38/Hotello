@@ -25,8 +25,9 @@ void board_copy(char game_board[8][8], char (*game_board_copy)[8]) {
 }
 
 void print_game(char game_board[8][8]) {
+    printf("\n   A B C D E F G H\n");
     for(int i = 0; i < 8; i++) {
-        printf("|");
+        printf("%d |", i+1);
         for(int j = 0; j < 8; j++) {
             printf("%c|", game_board[i][j]);
         }
