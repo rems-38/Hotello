@@ -16,20 +16,6 @@ void init_game_board(char game_board[8][8]) {
     game_board[4][4] = 'X';
 }
 
-void init_game_board_from_string(char game_board[8][8], char *game_board_moves) {
-    // Forme de game_board_moves: "E6D5C4B3A2"
-    // On initialise le tableau de jeu
-    char colonnes[] = "ABCDEFGH";
-    char player = 'O';
-    init_game_board(game_board);
-    for(int i = 0; i < strlen(game_board_moves); i += 2) {
-        int x = strchr(colonnes, game_board_moves[i]) - colonnes;
-        int y = (game_board_moves[i+1] - '0') - 1;
-        // Jouer le coup
-        player = get_opponent(player);
-    }
-}
-
 void board_copy(char game_board[8][8], char (*game_board_copy)[8]) {
     for(int i = 0; i < 8; i++) {
         for(int j = 0; j < 8; j++) {
@@ -40,11 +26,13 @@ void board_copy(char game_board[8][8], char (*game_board_copy)[8]) {
 
 void print_game(char game_board[8][8]) {
     for(int i = 0; i < 8; i++) {
+        printf("|");
         for(int j = 0; j < 8; j++) {
-            printf("%c", game_board[i][j]);
+            printf("%c|", game_board[i][j]);
         }
         printf("\n");
     }
+    printf("\n");
 }
 
 char get_opponent(char pion) {
