@@ -37,10 +37,6 @@ void print_game(char game_board[8][8]) {
 }
 
 char get_opponent(char pion) {
-    if(pion == 'X') {
-        return 'O';
-    } else {
-        return 'X';
-    }
+    return (pion == 'O') ? 'X' : 'O';
 }
 

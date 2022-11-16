@@ -76,5 +76,5 @@ int main() {
         else {
             printf("Illegal move, please try again.\n");
         }
-    }
+    } 
 }
