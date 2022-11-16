@@ -178,16 +178,6 @@ int compute_diagonal_moves(char game_board[8][8], int pion_x, int pion_y, char a
     return dm_index;
 }
 
-bool is_coord_present(int (*array)[2], int len, int coord_x, int coord_y) {
-    for(int i = 1; i < len; i++) {
-        if(array[i][0] == coord_x && array[i][1] == coord_y) {
-            return true;
-        }
-    }
-    return false;
-}
-
-
 void compute_legal_moves(char game_board[8][8], char actual_player, char (*legal_moves_board)[8], int moves_origins[8][8][9][2]) {
     int legal_moves[64][2];
     for(int i = 0; i < 8; i++) {
@@ -212,7 +202,6 @@ void compute_legal_moves(char game_board[8][8], char actual_player, char (*legal
                 char vertical_moves[2][2];
                 int vm_index = compute_vertical_moves(game_board, x, y, actual_player, vertical_moves);
                 for(int k = 0; k < vm_index; k++) {
-                    // printf("Vertical move : (%d %d) with origin (%d %d)\n", vertical_moves[k][0], vertical_moves[k][1], x, y); // DEBUG
                     int move_x = vertical_moves[k][0];
                     int move_y = vertical_moves[k][1];
                     legal_moves[lm_index][0] = move_x;
@@ -229,7 +218,6 @@ void compute_legal_moves(char game_board[8][8], char actual_player, char (*legal
                 char horizontal_moves[2][2];
                 int hm_index = compute_horizontal_moves(game_board, x, y, actual_player, horizontal_moves);
                 for(int k = 0; k < hm_index; k++) {
-                    // printf("Horizontal move : (%d %d) with origin : (%d %d)\n", horizontal_moves[k][0], horizontal_moves[k][1], x, y); // DEBUG
                     int move_x = horizontal_moves[k][0];
                     int move_y = horizontal_moves[k][1];
                     legal_moves[lm_index][0] = move_x;
@@ -246,7 +234,6 @@ void compute_legal_moves(char game_board[8][8], char actual_player, char (*legal
                 char diagonal_moves[4][2];
                 int dm_index = compute_diagonal_moves(game_board, x, y, actual_player, diagonal_moves);
                 for(int k = 0; k < dm_index; k++) {
-                    // printf("Diagonal move : (%d %d) with origin : (%d %d)\n", diagonal_moves[k][0], diagonal_moves[k][1], x, y); // DEBUG
                     int move_x = diagonal_moves[k][0];
                     int move_y = diagonal_moves[k][1];
                     
@@ -270,7 +257,6 @@ void compute_legal_moves(char game_board[8][8], char actual_player, char (*legal
 
     for(int i = 0; i < lm_index; i++) {
         legal_moves_board[legal_moves[i][1]][legal_moves[i][0]] = '*';
-        // printf("%d %d\n", legal_moves[i][0], legal_moves[i][1]); // DEBUG
     }
 
     return;

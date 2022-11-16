@@ -1,5 +1,6 @@
-#include<stdbool.h>
-#include<stdio.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 void make_horizontal_move(char game_board[8][8], int origin_x, int origin_y, int target_x, int target_y, char joueur) {
     bool direction = (origin_x < target_x);
@@ -57,19 +58,33 @@ void make_move(char game_board[8][8], int target_x, int target_y, char joueur, i
     for(int i = 1; i < om_index; i++) {
         int origin_x = moves_origins[target_y][target_x][i][0];
         int origin_y = moves_origins[target_y][target_x][i][1];
-        bool horizontal_move = (origin_y == target_y);
-        bool vertical_move = (origin_x == target_x);
-        bool diagonal_move = (!horizontal_move && !vertical_move);
-        if(horizontal_move) {
-            make_horizontal_move(game_board, origin_x, origin_y, target_x, target_y, joueur);
+        int delta_x = target_x - origin_x;
+        int delta_y = target_y - origin_y;
+        bool dir_x = delta_x > 0;
+        bool dir_y = delta_y > 0;
+        
+        for(int x = origin_x, y = origin_y; !(delta_x == 0 && delta_y == 0); (delta_x == 0 ? x : dir_x ? x++ : x--), (delta_y == 0 ? y : dir_y ? y++ : y--)) {
+            origin_x = x;
+            origin_y = y;
+            delta_x = target_x - origin_x;
+            delta_y = target_y - origin_y;
+
+            game_board[origin_y][origin_x] = joueur;
         }
-        if(vertical_move) {
-            make_vertical_move(game_board, origin_x, origin_y, target_x, target_y, joueur);
-        }
-        if(diagonal_move) {
-            make_diagonal_move(game_board, origin_x, origin_y, target_x, target_y, joueur);
-        }
-        game_board[target_y][target_x] = joueur;
+        
+        // bool horizontal_move = (origin_y == target_y);
+        // bool vertical_move = (origin_x == target_x);
+        // bool diagonal_move = (!horizontal_move && !vertical_move);
+        // if(horizontal_move) {
+        //     make_horizontal_move(game_board, origin_x, origin_y, target_x, target_y, joueur);
+        // }
+        // if(vertical_move) {
+        //     make_vertical_move(game_board, origin_x, origin_y, target_x, target_y, joueur);
+        // }
+        // if(diagonal_move) {
+        //     make_diagonal_move(game_board, origin_x, origin_y, target_x, target_y, joueur);
+        // }
+        // game_board[target_y][target_x] = joueur;
     }
     return;
 }   
