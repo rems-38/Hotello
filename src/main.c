@@ -44,10 +44,12 @@ void init_game_board_from_string(char game_board[8][8], char *game_board_moves) 
 
 } 
 
-bool is_win(char game_board[8][8]) {
+bool is_win(char game_board[8][8], char player) {
+    char legal_moves_board[8][8];
+    generate_legal_moves_board(game_board, player, legal_moves_board);
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
-            if (game_board[i][j] == '-') {
+            if (legal_moves_board[i][j] == '*') {
                 return false;
             }
         }
@@ -57,8 +59,7 @@ bool is_win(char game_board[8][8]) {
 
 int main() {
     init_game_board(game_board);
-
-    while (!is_win(game_board)){
+    while (!is_win(game_board, player)){
         char legal_moves_board[8][8];
         generate_legal_moves_board(game_board, player, legal_moves_board);
         print_game(legal_moves_board);
