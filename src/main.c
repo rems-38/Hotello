@@ -58,9 +58,12 @@ bool is_win(char game_board[8][8], char player) {
 }
 
 int main() {
-    // init_game_board(game_board);
-    init_game_board_from_string(game_board, "E6D6C5F4F5F6G5C4D3E3D7C6G4C3C7D8C8F3E8E7G3H4F8H2D2C2");
-    print_game(game_board);
+    init_game_board(game_board);
+    // init_game_board_from_string(game_board, "E6D6C5F4F5F6G5C4D3E3D7C6G4C3C7D8C8F3E8E7G3H4F8H2D2");
+    // print_game(game_board);
+    char legal_moves[8][8];
+    generate_legal_moves_board(game_board, 'O', legal_moves);
+    print_game(legal_moves);
     // while (!is_win(game_board, player)){
     //     char legal_moves_board[8][8];
     //     generate_legal_moves_board(game_board, player, legal_moves_board);
