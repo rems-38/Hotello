@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <stdbool.h>
+#include <string.h>
 #include "utils/utils.h"
 #include "make_move/make_move.h"
 #include "legal_moves/legal_moves.h"
-#include <string.h>
+#include "network/network.h"
 
 char game_board[8][8];
 char player = 'O';

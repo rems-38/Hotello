@@ -2,7 +2,7 @@ CC = gcc
 FLAGS = -Wall
 OBJDIR = obj
 
-game.out : main.o utils.o legal_moves.o make_move.o
+game.out : main.o utils.o legal_moves.o make_move.o network.o
 	$(CC) $(FLAGS) -o $@ $^
 
 main.o : src/main.c src/utils/utils.h src/legal_moves/legal_moves.h
@@ -15,6 +15,9 @@ make_move.o : src/make_move/make_move.c src/make_move/make_move.h src/utils/util
 	$(CC) $(FLAGS) -c $< 
 
 utils.o : src/utils/utils.c src/utils/utils.h
+	$(CC) $(FLAGS) -c $< 
+
+network.o : src/network/network.c src/network/network.h
 	$(CC) $(FLAGS) -c $< 
 
 clean :
