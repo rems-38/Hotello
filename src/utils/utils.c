@@ -40,3 +40,14 @@ char get_opponent(char pion) {
     return (pion == 'O') ? 'X' : 'O';
 }
 
+int get_score(char game_board[8][8], char player) {
+    int score = 0;
+    for(int i = 0; i < 8; i++) {
+        for(int j = 0; j < 8; j++) {
+            if(game_board[i][j] == player) {
+                score++;
+            }
+        }
+    }
+    return score;
+}

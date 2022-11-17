@@ -8,3 +8,4 @@ bool coup_valide(char game_board[8][8], int x, int y, char joueur);
 void jouer_coup(char game_board[8][8], int x, int y, char joueur);
 void board_copy(char game_board[8][8], char (*game_board_copy)[8]);
 char get_opponent(char actual_player);
+int get_score(char game_board[8][8], char player);

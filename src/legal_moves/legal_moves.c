@@ -1,8 +1,7 @@
 #include <stdbool.h>
 #include "../utils/utils.h"
 
-void compute_legal_moves(char game_board[8][8], char actual_player, char (*legal_moves_board)[8], int moves_origins[8][8][9][2]) {
-    int legal_moves[64][2];
+int compute_legal_moves(char game_board[8][8], char actual_player, int legal_moves[64][2], int moves_origins[8][8][9][2]) {
     for(int i = 0; i < 8; i++) {
         for(int j = 0; j < 8; j++) {
             moves_origins[i][j][0][0] = 1;
@@ -51,9 +50,23 @@ void compute_legal_moves(char game_board[8][8], char actual_player, char (*legal
             }
         }
     }
+    
+
+    return lm_index;
+}
+
+bool is_legal_move(char game_board[8][8], int target_x, int target_y, char actual_player, int moves_origins[8][8][9][2]) {
+    if(target_x < 0 || target_x > 7 || target_y < 0 || target_y > 7) return false;
+    if(game_board[target_y][target_x] != '-') return false;
+    if(moves_origins[target_y][target_x][0][0] == 1) return false;
+    return true;
+}
+
+void get_legal_moves_board(char game_board[8][8], char player, char legal_moves_board[8][8]) {
+    int legal_moves[64][2];
+    int moves_origins[8][8][9][2];
+    int lm_index = compute_legal_moves(game_board, player, legal_moves, moves_origins);
     for(int i = 0; i < lm_index; i++) {
         legal_moves_board[legal_moves[i][1]][legal_moves[i][0]] = '*';
     }
-
-    return;
 }
