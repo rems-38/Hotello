@@ -7,11 +7,11 @@ int evaluation(char game_board[8][8], char player) {
     return get_score(game_board, player); // A chier
 }
 
-void minimax(int depth, char game_board[8][8], char player, int *max_score, int *best_x, int *best_y, bool maximizing_player) {
-    if(depth == 0) {
-        return;
+int minimax(int depth, char game_board[8][8], char player, int *max_score, int *best_x, int *best_y, bool maximizing_player) {
+    if(depth == 0 || is_win(game_board)) {
+        return max_score;
     }
-    char legal_moves[64][2];
+    int legal_moves[64][2];
     int moves_origins[8][8][9][2];
     int lm_index = compute_legal_moves(game_board, player, legal_moves, moves_origins);
     int score = evaluation(game_board, player);
