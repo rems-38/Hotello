@@ -104,3 +104,11 @@ void init_game_board_from_string(char game_board[8][8], char *game_board_moves) 
     }
 
 } 
+
+int min(int a, int b) {
+    return (a < b) ? a : b;
+}
+
+int max(int a, int b) {
+    return (a > b) ? a : b;
+}
