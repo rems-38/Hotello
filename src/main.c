@@ -50,7 +50,7 @@ char pvai(char game_board[8][8], char human) {
             y = move[1] - '1';
         }
         else {
-            minimax(3, game_board, player, true, &x, &y);
+            compute_best_move(6, game_board, player, &x, &y);
         }
            
         if(proceed_move(game_board, player, x, y)) {
