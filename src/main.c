@@ -20,7 +20,7 @@ char pvp(char game_board[8][8]) {
         int legal_moves[64][2];
         int moves_origins[8][8][9][2];
         if(compute_legal_moves(game_board, player, legal_moves, moves_origins) == 1) {
-            printf("Player %c, only move possible is played : %c%c\n", player, legal_moves[0][0] + 'A', legal_moves[0][1] + '1');
+            printf("Player %c, unique move possible is played : %c%c\n", player, legal_moves[0][0] + 'A', legal_moves[0][1] + '1');
 
             proceed_move(game_board, player, legal_moves[0][0], legal_moves[0][1]);
             player = get_opponent(player);
@@ -58,7 +58,7 @@ char pvai(char game_board[8][8], char human) {
             char legal_moves_board[8][8];
             generate_legal_moves_board(game_board, player, legal_moves_board);
             print_game(legal_moves_board);
-            printf("Player %c, only move possible is played : %c%c\n", player, legal_moves[0][0] + 'A', legal_moves[0][1] + '1');
+            printf("Player %c, unique move possible is played : %c%c\n", player, legal_moves[0][0] + 'A', legal_moves[0][1] + '1');
 
             proceed_move(game_board, player, legal_moves[0][0], legal_moves[0][1]);
             player = get_opponent(player);

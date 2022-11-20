@@ -1,5 +1,5 @@
 CC = gcc
-FLAGS = -Wall
+FLAGS = -Wall -g
 OBJDIR = obj
 
 game.out : main.o utils.o legal_moves.o make_move.o network.o artificial_intelligence.o
