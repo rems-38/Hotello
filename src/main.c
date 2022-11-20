@@ -35,7 +35,23 @@ char pvp(char game_board[8][8]) {
 
 char pvai(char game_board[8][8], char human) {
     while (!is_win(game_board)){
+        // Si aucun coup n'est possible, on passe au joueur suivant
         if(!has_legal_move(game_board, player)) player = get_opponent(player);
+        
+        // Si on a que un coup possible, le programme le joue directement
+        int legal_moves[64][2];
+        int moves_origins[8][8][9][2];
+        if(compute_legal_moves(game_board, player, legal_moves, moves_origins) == 1) {
+            char legal_moves_board[8][8];
+            generate_legal_moves_board(game_board, player, legal_moves_board);
+            print_game(legal_moves_board);
+            printf("Player %c, only move possible is played : %c%c\n", player, legal_moves[0][0] + 'A', legal_moves[0][1] + '1');
+
+            proceed_move(game_board, player, legal_moves[0][0], legal_moves[0][1]);
+            player = get_opponent(player);
+            continue;
+        }
+
         int x = 0, y = 0;
         if(player == human) {
             char legal_moves_board[8][8];
@@ -50,6 +66,8 @@ char pvai(char game_board[8][8], char human) {
             y = move[1] - '1';
         }
         else {
+            print_game(game_board);
+            printf("Player %c, IA is thinking...\n", player);
             compute_best_move(6, game_board, player, &x, &y);
         }
            
