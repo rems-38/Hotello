@@ -9,12 +9,24 @@ char player = 'O';
 
 char pvp(char game_board[8][8]) {
     while (!is_win(game_board)){
+        // Si aucun coup n'est possible, on passe au joueur suivant
         if(!has_legal_move(game_board, player)) player = get_opponent(player);
 
         char legal_moves_board[8][8];
         generate_legal_moves_board(game_board, player, legal_moves_board);
         print_game(legal_moves_board);
 
+        // Si on a que un coup possible, le programme le joue directement
+        int legal_moves[64][2];
+        int moves_origins[8][8][9][2];
+        if(compute_legal_moves(game_board, player, legal_moves, moves_origins) == 1) {
+            printf("Player %c, only move possible is played : %c%c\n", player, legal_moves[0][0] + 'A', legal_moves[0][1] + '1');
+
+            proceed_move(game_board, player, legal_moves[0][0], legal_moves[0][1]);
+            player = get_opponent(player);
+            continue;
+        }
+        
         printf("Player %c, please enter your move: ", player);
         char move[3];
         scanf("%s", move);
@@ -28,6 +40,7 @@ char pvp(char game_board[8][8]) {
         else {
             printf("Illegal move, please try again.\n");
         }
+
     } 
     return get_score(game_board, 'X') > get_score(game_board, 'O') ? 'X' : 'O';
 }
