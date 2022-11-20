@@ -12,15 +12,20 @@ int stability(char game_board[8][8], char player) {
 
     for(int i = 0; i < 8; i++) {
         for(int j = 0; j < 8; j++) {
-            board_copy(game_board, temp_board);
             if(game_board[i][j] == player) {
-                compute_legal_moves(temp_board, player, legal_moves, moves_origins);
-                if(is_legal_move(game_board, i, j, player, moves_origins)) {
-                    stability--;
+                if(i == 0 || j == 0 || i == 7 || j == 7) {
+                    stability ++;
                 }
-                else {
-                    stability++;
+                for(int dir_y = -1; dir_y <= 1; dir_y++) {
+                    for(int dir_x = -1; dir_x <= 1; dir_x++) {
+                        if(dir_x == 0 && dir_y == 0) continue;
+                        if(y+dir_y < 0 || y+dir_y > 7 || x+dir_x < 0 || x+dir_x > 7) continue;
+                        if(game_board[y+dir_y][x+dir_x] == player) {
+                            stability++;
+                        }
+                    }
                 }
+
             }
         }
     }
