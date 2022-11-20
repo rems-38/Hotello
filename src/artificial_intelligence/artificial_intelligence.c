@@ -5,11 +5,6 @@
 
 int stability(char game_board[8][8], char player) {
     int stability = 0;
-    int legal_moves[64][2];
-    int moves_origins[8][8][9][2];
-
-    char temp_board[8][8];
-
     for(int i = 0; i < 8; i++) {
         for(int j = 0; j < 8; j++) {
             if(game_board[i][j] == player) {
@@ -19,8 +14,8 @@ int stability(char game_board[8][8], char player) {
                 for(int dir_y = -1; dir_y <= 1; dir_y++) {
                     for(int dir_x = -1; dir_x <= 1; dir_x++) {
                         if(dir_x == 0 && dir_y == 0) continue;
-                        if(y+dir_y < 0 || y+dir_y > 7 || x+dir_x < 0 || x+dir_x > 7) continue;
-                        if(game_board[y+dir_y][x+dir_x] == player) {
+                        if(i+dir_y < 0 || i+dir_y > 7 || j+dir_x < 0 || j+dir_x > 7) continue;
+                        if(game_board[i+dir_y][j+dir_x] == player) {
                             stability++;
                         }
                     }
