@@ -5,22 +5,27 @@
 
 int stability(char game_board[8][8], char player) {
     int stability = 0;
-    for(int i = 0; i < 8; i++) {
-        for(int j = 0; j < 8; j++) {
-            if(game_board[i][j] == player) {
-                if(i == 0 || j == 0 || i == 7 || j == 7) {
-                    stability ++;
+    bool coin = false;
+
+    for(int y = 0; y < 8; y++) {
+        for(int x = 0; x < 8; x++) {
+            if(game_board[y][x] == player) {
+                if(x == 0 || x == 7 || y == 0 || y == 7) {
+                    stability += 5;
+                    coin = true;
                 }
-                for(int dir_y = -1; dir_y <= 1; dir_y++) {
-                    for(int dir_x = -1; dir_x <= 1; dir_x++) {
-                        if(dir_x == 0 && dir_y == 0) continue;
-                        if(i+dir_y < 0 || i+dir_y > 7 || j+dir_x < 0 || j+dir_x > 7) continue;
-                        if(game_board[i+dir_y][j+dir_x] == player) {
-                            stability++;
+                if(coin) {
+                    for(int dir_y = -1; dir_y <= 1; dir_y++) {
+                        for(int dir_x = -1; dir_x <= 1; dir_x++) {
+                            if(dir_y == 0 && dir_x == 0) continue;
+                            if(y+dir_y < 0 || y+dir_y > 7 || y+dir_x < 0 || y+dir_x > 7) continue;
+                            if(game_board[y+dir_y][x+dir_x] != '-') {
+                                stability++;
+                            }
                         }
                     }
                 }
-
+                    
             }
         }
     }
