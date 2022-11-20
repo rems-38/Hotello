@@ -15,15 +15,17 @@ int stability(char game_board[8][8], char player) {
                     coin = true;
                 }
                 if(coin) {
+                    bool is_stable = true;
                     for(int dir_y = -1; dir_y <= 1; dir_y++) {
                         for(int dir_x = -1; dir_x <= 1; dir_x++) {
                             if(dir_y == 0 && dir_x == 0) continue;
                             if(y+dir_y < 0 || y+dir_y > 7 || y+dir_x < 0 || y+dir_x > 7) continue;
-                            if(game_board[y+dir_y][x+dir_x] != '-') {
-                                stability++;
+                            if(game_board[y+dir_y][x+dir_x] != player) {
+                                is_stable = false;
                             }
                         }
                     }
+                    if(is_stable) stability += 5;
                 }
                     
             }

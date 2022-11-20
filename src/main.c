@@ -3,6 +3,7 @@
 #include <string.h>
 #include "utils/utils.h"
 #include "artificial_intelligence/artificial_intelligence.h"
+#include "legal_moves/legal_moves.h"
 
 char game_board[8][8];
 char player = 'O';
@@ -116,8 +117,8 @@ char aivai(char game_board[8][8]) {
         int x = 0, y = 0;
 
         print_game(game_board);
-        printf("Player %c, IA is thinking...\n", player);
-        compute_best_move(4, game_board, player, &x, &y);
+        printf("Player %c, IA is thinking...\n", get_opponent(player));
+        compute_best_move(5, game_board, player, &x, &y);
            
         if(proceed_move(game_board, player, x, y)) {
             player = get_opponent(player);
