@@ -1,6 +1,16 @@
 #include <stdbool.h>
 #include "../utils/utils.h"
 
+
+bool is_coord_exist(int array[64][2], int x, int y, int size) {
+    for (int i = 0; i < size; i++) {
+        if (array[i][0] == x && array[i][1] == y) {
+            return true;
+        }
+    }
+    return false;
+}
+
 int compute_legal_moves(char game_board[8][8], char actual_player, int legal_moves[64][2], int moves_origins[8][8][9][2]) {
     for(int i = 0; i < 8; i++) {
         for(int j = 0; j < 8; j++) {
@@ -32,8 +42,11 @@ int compute_legal_moves(char game_board[8][8], char actual_player, int legal_mov
                             int move_y = y+(i*dir_y);
                             if(game_board[move_y][move_x] == actual_player) break;
                             if(game_board[move_y][move_x] == '-') {
-                                legal_moves[lm_index][0] = move_x;
-                                legal_moves[lm_index][1] = move_y;
+                                if(!is_coord_exist(legal_moves, move_x, move_y, lm_index)) {
+                                    legal_moves[lm_index][0] = move_x;
+                                    legal_moves[lm_index][1] = move_y;
+                                    lm_index++;
+                                }
 
                                 int mo_index = moves_origins[move_y][move_x][0][0];
 
@@ -41,7 +54,6 @@ int compute_legal_moves(char game_board[8][8], char actual_player, int legal_mov
                                 moves_origins[move_y][move_x][mo_index][1] = y;
                                 moves_origins[move_y][move_x][0][0]++;
 
-                                lm_index++;
                                 break;
                             }
                         }
@@ -51,7 +63,7 @@ int compute_legal_moves(char game_board[8][8], char actual_player, int legal_mov
         }
     }
     
-
+    
     return lm_index;
 }
 
@@ -63,9 +75,25 @@ bool is_legal_move(char game_board[8][8], int target_x, int target_y, char actua
 }
 
 void get_legal_moves_board(char game_board[8][8], char player, char legal_moves_board[8][8]) {
-    int legal_moves[64][2];
+    int legal_moves[64][2] = {0};
     int moves_origins[8][8][9][2];
     int lm_index = compute_legal_moves(game_board, player, legal_moves, moves_origins);
+
+    // for(int i = 0; i < 8; i++) {
+    //     for(int j = 0; j < 8; j++) {
+    //         if(moves_origins[i][j][0][0] > 1) {
+    //             for(int k = 0; k < moves_origins[i][j][0][0]; k++) {
+    //                 printf("(%d %d) with origins (%d %d)\n", j, i, moves_origins[i][j][k][0], moves_origins[i][j][k][1]);
+    //             }
+    //         }
+    //     }
+    // }
+    // printf("Legal moves : \n");
+    // for(int i = 0; i < lm_index; i++) {
+    //     printf("(%d %d)\n", legal_moves[i][0], legal_moves[i][1]);
+    // }
+    // printf("\n");
+
     for(int i = 0; i < lm_index; i++) {
         legal_moves_board[legal_moves[i][1]][legal_moves[i][0]] = '*';
     }

@@ -82,7 +82,7 @@ char pvai(char game_board[8][8], char human) {
         else {
             print_game(game_board);
             printf("Player %c, IA is thinking...\n", player);
-            compute_best_move(6, game_board, player, &x, &y);
+            compute_best_move(5, game_board, player, &x, &y);
         }
            
         if(proceed_move(game_board, player, x, y)) {
@@ -118,7 +118,10 @@ char aivai(char game_board[8][8]) {
 
         print_game(game_board);
         printf("Player %c, IA is thinking...\n", get_opponent(player));
-        compute_best_move(5, game_board, player, &x, &y);
+        compute_best_move(3, game_board, player, &x, &y);
+        // printf("%c%c\n", x + 'A', y + '1');
+        // strcat(game_moves, (char[]){x + 'A', y + '1', '\0'});
+        // printf("%s", game_moves);
            
         if(proceed_move(game_board, player, x, y)) {
             player = get_opponent(player);
@@ -130,9 +133,14 @@ char aivai(char game_board[8][8]) {
     return get_score(game_board, 'X') > get_score(game_board, 'O') ? 'X' : 'O';
 }
 
+
 int main() {
     init_game_board(game_board);
-    // init_game_board_from_string(game_board, "E6D6C5F4F5F6G5C4D3E3D7C6G4C3C7D8C8F3E8E7G3H4F8H2D2C2F7E1H3H5H1G6H6B8A8G7H8G8G2F2G1E2B3B4F1");
+    //init_game_board_from_string(game_board, "C4E3F4C5C6B5D6F6B4B3C3D3C2G5F5D7B7E2F3D2F2D1B2G4B6A2G3G2G1B8A3F1H2A5C1E6A6A1A8H3B1C7E1A7A4H1H4H5G6G7D8E7");
     //printf("Winner: %c", pvai(game_board, 'O'));
-    printf("Winner: %c", aivai(game_board));
+    // printf("Winner: %c", aivai(game_board));
+
+    
 }
+
+

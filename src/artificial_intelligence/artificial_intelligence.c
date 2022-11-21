@@ -11,7 +11,7 @@ int stability(char game_board[8][8], char player) {
         for(int x = 0; x < 8; x++) {
             if(game_board[y][x] == player) {
                 if(x == 0 || x == 7 || y == 0 || y == 7) {
-                    stability += 5;
+                    stability += 100;
                     coin = true;
                 }
                 if(coin) {
