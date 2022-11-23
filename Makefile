@@ -1,12 +1,12 @@
 CC = gcc
-FLAGS = -Wall -g
+FLAGS = -Wall -g -L./lib
 OBJDIR = obj
 
 game.out : main.o utils.o legal_moves.o make_move.o network.o artificial_intelligence.o
-	$(CC) $(FLAGS) -o $@ $^
+	$(CC) $(FLAGS) -o $@ $^ -lothello
 
 main.o : src/main.c src/utils/utils.h src/legal_moves/legal_moves.h src/network/userNetwork.h
-	$(CC) $(FLAGS) -c $< -lothello
+	$(CC) $(FLAGS) -c $<
 
 legal_moves.o : src/legal_moves/legal_moves.c src/legal_moves/legal_moves.h src/utils/utils.h
 	$(CC) $(FLAGS) -c $< 

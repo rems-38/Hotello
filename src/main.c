@@ -9,6 +9,9 @@
 char game_board[8][8];
 char player = 'O';
 
+game *mynetgame;
+#define BLACK 0
+
 char pvp(char game_board[8][8]) {
     while (!is_win(game_board)){
         // Si aucun coup n'est possible, on passe au joueur suivant
@@ -119,7 +122,7 @@ char aivai(char game_board[8][8]) {
 
         print_game(game_board);
         printf("Player %c, IA is thinking...\n", get_opponent(player));
-        compute_best_move(8, game_board, player, &x, &y);
+        compute_best_move(4, game_board, player, &x, &y);
         // printf("%c%c\n", x + 'A', y + '1');
         // strcat(game_moves, (char[]){x + 'A', y + '1', '\0'});
         // printf("%s", game_moves);
@@ -136,10 +139,51 @@ char aivai(char game_board[8][8]) {
 
 
 int main() {
+    int move;
     init_game_board(game_board);
-    // init_game_board_from_string(game_board, "C4E3F4C5C6B5D6F6B4B3C3D3C2G5F5D7B7E2F3D2F2D1B2G4B6A2G3G2G1B8A3F1H2A5C1E6A6A1A8H3B1C7E1A7A4H1H4H5G6G7D8E7");
-    //printf("Winner: %c", pvai(game_board, 'O'));
-    printf("Winner: %c", aivai(game_board));
+    mynetgame = allocateGameOthello();
+
+    mynetgame->address = "192.168.132.18";
+    mynetgame->userId = 2;
+    mynetgame->port = 8080;
+    registerGameOthello(mynetgame, "binome2");
+    if(startGameOthello(mynetgame) < 0) {
+        printf("Erreur de lancement");
+    }
+    printf("I am player %s\n",(mynetgame->myColor==BLACK)?"black":"white"); 
+    player = mynetgame->myColor==BLACK ? 'O': 'X'; // black => 'O'
+    printf("I am %c and server is %c\n", player, get_opponent(player));
+	// debut de partie
+	while (mynetgame->state == PLAYING && !feof(stdin)) {
+	 	if (mynetgame->myColor != mynetgame->currentPlayer) { // attente du coup de l'adversaire 
+			if ((move=waitMoveOthello(mynetgame)) == 0 ) {
+				printf("Game status %d: \t",mynetgame->state); 
+                print_game(game_board);
+				if (mynetgame->state == PLAYING) { 
+					printf("Received move from server %d (x=%d,y=%d)\n",mynetgame->move,mynetgame->move%8,mynetgame->move/8); 
+                    int x = mynetgame->move%8;
+                    int y = mynetgame->move/8;
+                    proceed_move(game_board, player, x, y);
+				}
+			}
+		}
+	 	else {
+            int x = 0, y = 0;
+            print_game(game_board);
+            printf("Player %c, IA is thinking...\n", player);
+            compute_best_move(6, game_board, player, &x, &y);
+            printf("Coup que je veux jouer : (%d %d)", x, y);
+            proceed_move(game_board, player, x, y);
+            print_game(game_board);
+            mynetgame->move = y*8 + x;
+			doMoveOthello(mynetgame);	// envoie du coup à l'adversaire
+	   	}
+		mynetgame->currentPlayer=!(mynetgame->currentPlayer);  	// on change de joueur 
+        player = get_opponent(player);
+	} 
+	// fin de partie 
+	printf("Final game status = %d\n",mynetgame->state); 
+	freeGameOthello(mynetgame);
 }
 
 
