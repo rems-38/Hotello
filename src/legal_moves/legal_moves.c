@@ -12,6 +12,10 @@ bool is_coord_exist(int array[64][2], int x, int y, int size) {
 }
 
 int compute_legal_moves(char game_board[8][8], char actual_player, int legal_moves[64][2], int moves_origins[8][8][9][2]) {
+    for(int i = 0; i < 64; i++) {
+        legal_moves[i][0] = 0;
+        legal_moves[i][1] = 0;
+    }
     for(int i = 0; i < 8; i++) {
         for(int j = 0; j < 8; j++) {
             moves_origins[i][j][0][0] = 1;
@@ -46,6 +50,7 @@ int compute_legal_moves(char game_board[8][8], char actual_player, int legal_mov
                                     legal_moves[lm_index][0] = move_x;
                                     legal_moves[lm_index][1] = move_y;
                                     lm_index++;
+                                    // printf("Ajout de (%d %d)\n", move_x, move_y);
                                 }
 
                                 int mo_index = moves_origins[move_y][move_x][0][0];

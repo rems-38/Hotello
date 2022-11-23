@@ -3,15 +3,26 @@
 #include "../utils/utils.h"
 #include <stdbool.h>
 
+
+bool is_in_coins(int x, int y) {
+    int coins[4][2] = {{0,0}, {7,0}, {0,7}, {7,7}};    
+    for(int i = 0; i < 4; i++) {
+        if(coins[i][0] == x && coins[i][1] == y) {
+            return true;
+        }
+    }
+    return false;
+}
+
 int stability(char game_board[8][8], char player) {
     int stability = 0;
     bool coin = false;
-
+    
     for(int y = 0; y < 8; y++) {
         for(int x = 0; x < 8; x++) {
             if(game_board[y][x] == player) {
-                if(x == 0 || x == 7 || y == 0 || y == 7) {
-                    stability += 100;
+                if(is_in_coins(x, y)) {
+                    stability += 300;
                     coin = true;
                 }
                 if(coin) {
