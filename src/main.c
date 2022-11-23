@@ -4,6 +4,7 @@
 #include "utils/utils.h"
 #include "artificial_intelligence/artificial_intelligence.h"
 #include "legal_moves/legal_moves.h"
+#include "network/userNetwork.h"
 
 char game_board[8][8];
 char player = 'O';

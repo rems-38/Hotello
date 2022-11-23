@@ -5,8 +5,8 @@ OBJDIR = obj
 game.out : main.o utils.o legal_moves.o make_move.o network.o artificial_intelligence.o
 	$(CC) $(FLAGS) -o $@ $^
 
-main.o : src/main.c src/utils/utils.h src/legal_moves/legal_moves.h
-	$(CC) $(FLAGS) -c $< 
+main.o : src/main.c src/utils/utils.h src/legal_moves/legal_moves.h src/network/userNetwork.h
+	$(CC) $(FLAGS) -c $< -lothello
 
 legal_moves.o : src/legal_moves/legal_moves.c src/legal_moves/legal_moves.h src/utils/utils.h
 	$(CC) $(FLAGS) -c $< 
