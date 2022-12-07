@@ -1,5 +1,5 @@
 CC = gcc
-FLAGS = -Wall -g -L./lib
+FLAGS = -Wall -g -L./lib/
 OBJDIR = obj
 
 game.out : main.o utils.o legal_moves.o make_move.o network.o artificial_intelligence.o
