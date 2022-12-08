@@ -8,27 +8,34 @@
 #include <time.h>
 #include <stdlib.h>
 
-
+#define cz {0,0}
+#define cz2 {1, 0}
+#define dz {cz2, cz, cz, cz, cz, cz, cz, cz, cz}
+#define e_line {dz, dz, dz, dz, dz, dz, dz, dz}
+#define e_movorigin {e_line, e_line, e_line, e_line, e_line, e_line, e_line, e_line}
+#define e_lm {cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz}
+#define e_bline {0,0,0,0,0,0,0,0}
+#define e_board {e_bline, e_bline, e_bline, e_bline, e_bline, e_bline, e_bline, e_bline}
 
 char game_board[8][8];
 char player = 'O';
 
 game *mynetgame;
 #define BLACK 0
-#define DEPTH 20
+#define DEPTH 5
 
 char pvp(char game_board[8][8]) {
     while (!is_win(game_board)){
         // Si aucun coup n'est possible, on passe au joueur suivant
         if(!has_legal_move(game_board, player)) player = get_opponent(player);
 
-        char legal_moves_board[8][8];
+        char legal_moves_board[8][8] = e_board;
         generate_legal_moves_board(game_board, player, legal_moves_board);
         print_game(legal_moves_board);
 
         // Si on a que un coup possible, le programme le joue directement
-        int legal_moves[64][2];
-        int moves_origins[8][8][9][2];
+        int legal_moves[64][2] = e_lm;
+        int moves_origins[8][8][9][2] = e_movorigin;
         if(compute_legal_moves(game_board, player, legal_moves, moves_origins) == 1) {
             printf("Player %c, unique move possible is played : %c%c\n", player, legal_moves[0][0] + 'A', legal_moves[0][1] + '1');
 
@@ -61,10 +68,10 @@ char pvai(char game_board[8][8], char human) {
         if(!has_legal_move(game_board, player)) player = get_opponent(player);
         
         // Si on a que un coup possible, le programme le joue directement
-        int legal_moves[64][2];
-        int moves_origins[8][8][9][2];
+        int legal_moves[64][2] = e_lm;
+        int moves_origins[8][8][9][2] = e_movorigin;
         if(compute_legal_moves(game_board, player, legal_moves, moves_origins) == 1) {
-            char legal_moves_board[8][8];
+            char legal_moves_board[8][8] = e_board;
             generate_legal_moves_board(game_board, player, legal_moves_board);
             print_game(legal_moves_board);
             printf("Player %c, unique move possible is played : %c%c\n", player, legal_moves[0][0] + 'A', legal_moves[0][1] + '1');
@@ -76,7 +83,7 @@ char pvai(char game_board[8][8], char human) {
 
         int x = 0, y = 0;
         if(player == human) {
-            char legal_moves_board[8][8];
+            char legal_moves_board[8][8] = e_board;
             generate_legal_moves_board(game_board, player, legal_moves_board);
             print_game(legal_moves_board);
 
@@ -109,10 +116,10 @@ char aivai(char game_board[8][8]) {
         if(!has_legal_move(game_board, player)) player = get_opponent(player);
         
         // Si on a que un coup possible, le programme le joue directement
-        int legal_moves[64][2];
-        int moves_origins[8][8][9][2];
+        int legal_moves[64][2] = e_lm;
+        int moves_origins[8][8][9][2] = e_movorigin;
         if(compute_legal_moves(game_board, player, legal_moves, moves_origins) == 1) {
-            char legal_moves_board[8][8];
+            char legal_moves_board[8][8] = e_board;
             generate_legal_moves_board(game_board, player, legal_moves_board);
             print_game(legal_moves_board);
             printf("Player %c, unique move possible is played : %c%c\n", player, legal_moves[0][0] + 'A', legal_moves[0][1] + '1');
@@ -127,9 +134,6 @@ char aivai(char game_board[8][8]) {
         print_game(game_board);
         printf("Player %c, IA is thinking...\n", get_opponent(player));
         compute_best_move(DEPTH, game_board, player, &x, &y);
-        // printf("%c%c\n", x + 'A', y + '1');
-        // strcat(game_moves, (char[]){x + 'A', y + '1', '\0'});
-        // printf("%s", game_moves);
            
         if(proceed_move(game_board, player, x, y)) {
             player = get_opponent(player);
@@ -142,7 +146,7 @@ char aivai(char game_board[8][8]) {
 }
 
 char aivserver(game *g, char game_board[8][8]) {
-    int move;
+    int move = 0;
     g = allocateGameOthello();
 
     g->address = "192.168.132.18";
@@ -204,8 +208,8 @@ int main() {
     // init_game_board_from_string(game_board, "E6D6C5F4F5F6G5C4D3E3D7C6G4C3C7D8C8F3E8E7G3H4F8H2D2C2F7E1H3H5H1G6H6B8A8G7H8G8G2F2G1E2B3B4F1");
     //init_game_board_from_string(game_board, "C4E3F4C5C6B5D6F6B4B3C3D3C2G5F5D7B7E2F3D2F2D1B2G4B6A2G3G2G1B8A3F1H2A5C1E6A6A1A8H3B1C7E1A7A4H1H4H5G6G7D8E7");
     
-    // printf("Winner: %c", aivserver(mynetgame, game_board));
-    printf("Winner: %c", aivai(game_board));
+    printf("Winner: %c", aivserver(mynetgame, game_board));
+    // printf("Winner: %c", aivai(game_board));
 }
 
 

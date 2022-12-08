@@ -3,6 +3,7 @@
         "stdio.h": "c",
         "utils.h": "c",
         "stdbool.h": "c",
-        "string.h": "c"
+        "string.h": "c",
+        "legal_moves.h": "c"
     }
 }

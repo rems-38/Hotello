@@ -3,6 +3,15 @@
 #include "../make_move/make_move.h"
 #include <string.h>
 
+#define cz {0,0}
+#define cz2 {1, 0}
+#define dz {cz2, cz, cz, cz, cz, cz, cz, cz, cz}
+#define e_line {dz, dz, dz, dz, dz, dz, dz, dz}
+#define e_movorigin {e_line, e_line, e_line, e_line, e_line, e_line, e_line, e_line}
+#define e_lm {cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz}
+#define e_bline {0,0,0,0,0,0,0,0}
+#define e_board {e_bline, e_bline, e_bline, e_bline, e_bline, e_bline, e_bline, e_bline}
+
 void init_game_board(char game_board[8][8]) {
     // Remplir tout le tableau de tiret (case vide)
     for(int i = 0; i < 8; i++) {
@@ -56,8 +65,8 @@ int get_score(char game_board[8][8], char player) {
 
 
 bool has_legal_move(char game_board[8][8], char player) {
-    int legal_moves[64][2];
-    int moves_origins[8][8][9][2];
+    int legal_moves[64][2] = e_lm;
+    int moves_origins[8][8][9][2] = e_movorigin;
     compute_legal_moves(game_board, player, legal_moves, moves_origins);
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
@@ -77,8 +86,8 @@ void generate_legal_moves_board(char game_board[8][8], char player, char legal_m
 }
 
 bool proceed_move(char game_board[8][8], char player, int target_x, int target_y) {
-    int moves_origins[8][8][9][2];
-    int legal_moves[64][2];
+    int moves_origins[8][8][9][2] = e_movorigin;
+    int legal_moves[64][2] = e_lm;
     compute_legal_moves(game_board, player, legal_moves, moves_origins);
     if(is_legal_move(game_board, target_x, target_y, player, moves_origins)) {
         make_move(game_board, target_x, target_y, player, moves_origins);

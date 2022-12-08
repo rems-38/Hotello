@@ -1,6 +1,14 @@
 #include <stdbool.h>
 #include "../utils/utils.h"
 
+#define cz {0,0}
+#define cz2 {1, 0}
+#define dz {cz2, cz, cz, cz, cz, cz, cz, cz, cz}
+#define e_line {dz, dz, dz, dz, dz, dz, dz, dz}
+#define e_movorigin {e_line, e_line, e_line, e_line, e_line, e_line, e_line, e_line}
+#define e_lm {cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz}
+#define e_bline {0,0,0,0,0,0,0,0}
+#define e_board {e_bline, e_bline, e_bline, e_bline, e_bline, e_bline, e_bline, e_bline}
 
 bool is_coord_exist(int array[64][2], int x, int y, int size) {
     for (int i = 0; i < size; i++) {
@@ -12,23 +20,6 @@ bool is_coord_exist(int array[64][2], int x, int y, int size) {
 }
 
 int compute_legal_moves(char game_board[8][8], char actual_player, int legal_moves[64][2], int moves_origins[8][8][9][2]) {
-    for(int i = 0; i < 64; i++) {
-        legal_moves[i][0] = 0;
-        legal_moves[i][1] = 0;
-    }
-    for(int i = 0; i < 8; i++) {
-        for(int j = 0; j < 8; j++) {
-            moves_origins[i][j][0][0] = 1;
-            moves_origins[i][j][0][1] = 0;
-            for(int k = 1; k < 9; k++) {
-                // On initialise tout à 0
-                moves_origins[i][j][k][0] = 0;
-                moves_origins[i][j][k][1] = 0;
-            }
-            
-        }
-    }
-
 
     int lm_index = 0;  // Index pour le tableau des mouvements possibles
     for(int y = 0; y < 8; y++) {
@@ -80,24 +71,9 @@ bool is_legal_move(char game_board[8][8], int target_x, int target_y, char actua
 }
 
 void get_legal_moves_board(char game_board[8][8], char player, char legal_moves_board[8][8]) {
-    int legal_moves[64][2] = {0};
-    int moves_origins[8][8][9][2];
+    int legal_moves[64][2] = e_lm;
+    int moves_origins[8][8][9][2] = e_movorigin;
     int lm_index = compute_legal_moves(game_board, player, legal_moves, moves_origins);
-
-    // for(int i = 0; i < 8; i++) {
-    //     for(int j = 0; j < 8; j++) {
-    //         if(moves_origins[i][j][0][0] > 1) {
-    //             for(int k = 0; k < moves_origins[i][j][0][0]; k++) {
-    //                 printf("(%d %d) with origins (%d %d)\n", j, i, moves_origins[i][j][k][0], moves_origins[i][j][k][1]);
-    //             }
-    //         }
-    //     }
-    // }
-    // printf("Legal moves : \n");
-    // for(int i = 0; i < lm_index; i++) {
-    //     printf("(%d %d)\n", legal_moves[i][0], legal_moves[i][1]);
-    // }
-    // printf("\n");
 
     for(int i = 0; i < lm_index; i++) {
         legal_moves_board[legal_moves[i][1]][legal_moves[i][0]] = '*';
