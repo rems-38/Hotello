@@ -13,6 +13,18 @@
 #define e_bline {0,0,0,0,0,0,0,0}
 #define e_board {e_bline, e_bline, e_bline, e_bline, e_bline, e_bline, e_bline, e_bline}
 
+int force_array[8][8] = {
+    {500,-75,30,10,10,30,-75,500},
+    {-75,-175,0,0,0,0,-175,-75},
+    {30,0,1,2,2,1,0,30},
+    {10,0,2,16,16,2,0,10},
+    {10,0,2,16,16,2,0,10},
+    {30,0,1,2,2,1,0,30},
+    {-75,-175,0,0,0,0,-175,-75},
+    {500,-75,30,10,10,30,-75,500}
+};
+
+
 bool is_in_coins(int x, int y) {
     int coins[4][2] = {{0,0}, {7,0}, {0,7}, {7,7}};    
     for(int i = 0; i < 4; i++) {
@@ -23,6 +35,18 @@ bool is_in_coins(int x, int y) {
     return false;
 }
 
+int force_measurement(char game_board[8][8], char player) {
+    int force = 0;
+    for(int y = 0; y < 8; y++) {
+        for(int x = 0; x < 8; x++) {
+            if(game_board[y][x] == player) {
+                force += force_array[y][x];
+            }
+        }
+    }
+    return force;
+}
+
 int stability(char game_board[8][8], char player) {
     int stability = 0;
     bool coin = false;
@@ -31,7 +55,7 @@ int stability(char game_board[8][8], char player) {
         for(int x = 0; x < 8; x++) {
             if(game_board[y][x] == player) {
                 if(is_in_coins(x, y)) {
-                    stability += 300;
+                    stability += 100;
                     coin = true;
                 }
                 if(coin) {
@@ -45,7 +69,7 @@ int stability(char game_board[8][8], char player) {
                             }
                         }
                     }
-                    if(is_stable) stability += 5;
+                    if(is_stable) stability += 100;
                 }
                     
             }
@@ -58,32 +82,16 @@ int evaluation(char game_board[8][8], char player) {
     int legal_moves[64][2] = e_lm;
     int moves_origins[8][8][9][2] = e_movorigin;
 
-    char temp_board[8][8] = e_board;
-    board_copy(game_board, temp_board);
-
-    int lm_index = compute_legal_moves(temp_board, player, legal_moves, moves_origins); // Nombre de coup possible (ie. mobilité)
-    int stability_score = stability(temp_board, player); // normalement ça marche (mais IA super lente mtn)
-    int pieces_win = 0;
-    int score = 0;
-    // for(int i = 0; i < lm_index; i++) {
-    //     int x = legal_moves[i][0];
-    //     int y = legal_moves[i][1];
-
-    //     int new_pieces_win = make_move(temp_board, player, x, y, moves_origins); // Combien de pièces on a mangé avec ce coup (ie. indice de mangeabilité)
-    //     if(new_pieces_win > pieces_win) {
-    //         pieces_win = new_pieces_win;
-    //     }
-        
-    //     board_copy(game_board, temp_board);
-    // }
-    score = pieces_win + lm_index + stability_score; // Formule math à définir mieux (addition -> nul)
-
-
+    int lm_index = compute_legal_moves(game_board, player, legal_moves, moves_origins); // Nombre de coup possible (ie. mobilité)
+    int force_score = force_measurement(game_board, player);
+    int pieces_win = get_score(game_board, player);
+    int score = force_score + 2*(lm_index-1) + 1*pieces_win;
     return score;
 }
 
-int minimax(int depth, char node[8][8], char player, bool maximizingPlayer, int alpha, int beta) {
+int minimax(int depth, char node[8][8], char player, bool maximizingPlayer, int alpha, int beta, int *nb_nodes) {
     int value;
+    *nb_nodes += 1;
     if (depth == 0 || is_win(node)) {
         return evaluation(node, player);
     }
@@ -98,7 +106,7 @@ int minimax(int depth, char node[8][8], char player, bool maximizingPlayer, int 
         value = -10000;
         for (int i = 0; i < lm_index; i++) {
             make_move(node, legal_moves[i][0], legal_moves[i][1], player, moves_origins);
-            value = max(value, minimax(depth - 1, node, get_opponent(player), !maximizingPlayer, alpha, beta)); // on passe au joueur suivant
+            value = max(value, minimax(depth - 1, node, get_opponent(player), !maximizingPlayer, alpha, beta, nb_nodes)); // on passe au joueur suivant
             board_copy(origin_board, node);
             if(value >= beta) {
                 return value;
@@ -110,7 +118,7 @@ int minimax(int depth, char node[8][8], char player, bool maximizingPlayer, int 
         value = 10000;
         for (int i = 0; i < lm_index; i++) {
             make_move(node, legal_moves[i][0], legal_moves[i][1], player, moves_origins);
-            value = min(value, minimax(depth - 1, node, get_opponent(player), !maximizingPlayer, alpha, beta)); // on passe au joueur suivant
+            value = min(value, minimax(depth - 1, node, get_opponent(player), !maximizingPlayer, alpha, beta, nb_nodes)); // on passe au joueur suivant
             board_copy(origin_board, node);
             if (alpha >= value) {
                 return value;
@@ -123,7 +131,7 @@ int minimax(int depth, char node[8][8], char player, bool maximizingPlayer, int 
 
 
 
-void compute_best_move(int depth, char game_board[8][8], char player, int *best_x, int *best_y) {
+void compute_best_move(int depth, char game_board[8][8], char player, int *best_x, int *best_y, int *nb_nodes) {
     int legal_moves[64][2] = e_lm;
     int moves_origins[8][8][9][2] = e_movorigin;
     
@@ -135,7 +143,7 @@ void compute_best_move(int depth, char game_board[8][8], char player, int *best_
     *best_y = legal_moves[0][1];
     for (int i = 0; i < lm_index; i++) {
         make_move(origin_board, legal_moves[i][0], legal_moves[i][1], player, moves_origins);
-        int score = minimax(depth-1, origin_board, get_opponent(player), false, -10000, 10000);
+        int score = minimax(depth-1, origin_board, get_opponent(player), false, -10000, 10000, nb_nodes);
         if(score == best_score && rand() % 2 == 0) {
             *best_x = legal_moves[i][0];
             *best_y = legal_moves[i][1];

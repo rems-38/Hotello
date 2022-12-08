@@ -19,10 +19,11 @@
 
 char game_board[8][8];
 char player = 'O';
+int nb_nodes = 0;
 
 game *mynetgame;
 #define BLACK 0
-#define DEPTH 5
+#define DEPTH 7
 
 char pvp(char game_board[8][8]) {
     while (!is_win(game_board)){
@@ -97,7 +98,7 @@ char pvai(char game_board[8][8], char human) {
         else {
             print_game(game_board);
             printf("Player %c, IA is thinking...\n", player);
-            compute_best_move(DEPTH, game_board, player, &x, &y);
+            compute_best_move(DEPTH, game_board, player, &x, &y, &nb_nodes);
         }
            
         if(proceed_move(game_board, player, x, y)) {
@@ -133,7 +134,7 @@ char aivai(char game_board[8][8]) {
 
         print_game(game_board);
         printf("Player %c, IA is thinking...\n", get_opponent(player));
-        compute_best_move(DEPTH, game_board, player, &x, &y);
+        compute_best_move(DEPTH, game_board, player, &x, &y, &nb_nodes);
            
         if(proceed_move(game_board, player, x, y)) {
             player = get_opponent(player);
@@ -172,7 +173,7 @@ char aivserver(game *g, char game_board[8][8]) {
 					printf("Received move from server %d (x=%d,y=%d)\n",g->move,g->move%8,g->move/8); 
                     int x = g->move%8;
                     int y = g->move/8;
-                    proceed_move(game_board, player, x, y);
+                    proceed_move(game_board, get_opponent(player), x, y);
 				}
 			}
 		}
@@ -181,17 +182,19 @@ char aivserver(game *g, char game_board[8][8]) {
             print_game(game_board);
             printf("Player %c, IA is thinking...\n", player);
 
-            compute_best_move(DEPTH, game_board, player, &x, &y);
-            printf("Coup que je veux jouer : (%d %d)", x, y);
+            compute_best_move(DEPTH, game_board, player, &x, &y, &nb_nodes);
+            printf("Coup que je veux jouer : (%d %d)\n", x, y);
+            printf("Nombre de noeuds : %d", nb_nodes);
 
             proceed_move(game_board, player, x, y);
             print_game(game_board);
             g->move = y*8 + x;
-			doMoveOthello(mynetgame);	// envoie du coup à l'adversaire
+			doMoveOthello(g);	// envoie du coup à l'adversaire
+            nb_nodes = 0;
 	   	}
 
 		g->currentPlayer=!(g->currentPlayer);  	// on change de joueur 
-        player = get_opponent(player);
+        // player = get_opponent(player);
 	} 
 
 	// fin de partie 
@@ -208,7 +211,7 @@ int main() {
     // init_game_board_from_string(game_board, "E6D6C5F4F5F6G5C4D3E3D7C6G4C3C7D8C8F3E8E7G3H4F8H2D2C2F7E1H3H5H1G6H6B8A8G7H8G8G2F2G1E2B3B4F1");
     //init_game_board_from_string(game_board, "C4E3F4C5C6B5D6F6B4B3C3D3C2G5F5D7B7E2F3D2F2D1B2G4B6A2G3G2G1B8A3F1H2A5C1E6A6A1A8H3B1C7E1A7A4H1H4H5G6G7D8E7");
     
-    printf("Winner: %c", aivserver(mynetgame, game_board));
+    printf("Winner: %c\n", aivserver(mynetgame, game_board));
     // printf("Winner: %c", aivai(game_board));
 }
 
