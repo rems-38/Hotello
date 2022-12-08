@@ -130,6 +130,8 @@ void compute_best_move(int depth, char game_board[8][8], char player, int *best_
     char origin_board[8][8];
     board_copy(game_board, origin_board);
     int lm_index = compute_legal_moves(origin_board, player, legal_moves, moves_origins);
+    *best_x = legal_moves[0][0];
+    *best_y = legal_moves[0][1];
     for (int i = 0; i < lm_index; i++) {
         make_move(origin_board, legal_moves[i][0], legal_moves[i][1], player, moves_origins);
         int score = minimax(depth-1, origin_board, get_opponent(player), false, 10000, -10000);
