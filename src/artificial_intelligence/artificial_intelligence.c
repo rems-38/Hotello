@@ -4,6 +4,13 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+#define cz {0,0}
+#define dz {cz, cz, cz, cz, cz, cz, cz, cz, cz}
+#define e_line {dz, dz, dz, dz, dz, dz, dz, dz}
+#define e_movorigin {e_line, e_line, e_line, e_line, e_line, e_line, e_line, e_line}
+#define e_lm {cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz, cz}
+#define e_bline {0,0,0,0,0,0,0,0}
+#define e_board {e_bline, e_bline, e_bline, e_bline, e_bline, e_bline, e_bline, e_bline}
 
 bool is_in_coins(int x, int y) {
     int coins[4][2] = {{0,0}, {7,0}, {0,7}, {7,7}};    
@@ -79,8 +86,8 @@ int minimax(int depth, char node[8][8], char player, bool maximizingPlayer, int 
     if (depth == 0 || is_win(node)) {
         return evaluation(node, player);
     }
-    int legal_moves[64][2];
-    int moves_origins[8][8][9][2];
+    int legal_moves[64][2] = e_lm;
+    int moves_origins[8][8][9][2] = e_movorigin;
     int lm_index = compute_legal_moves(node, player, legal_moves, moves_origins);
     
     char origin_board[8][8];
@@ -113,9 +120,11 @@ int minimax(int depth, char node[8][8], char player, bool maximizingPlayer, int 
     return value;
 }
 
+
+
 void compute_best_move(int depth, char game_board[8][8], char player, int *best_x, int *best_y) {
-    int legal_moves[64][2];
-    int moves_origins[8][8][9][2];
+    int legal_moves[64][2] = e_line;
+    int moves_origins[8][8][9][2] = e_movorigin;
     
     int best_score = -10000;
     char origin_board[8][8];
@@ -124,7 +133,12 @@ void compute_best_move(int depth, char game_board[8][8], char player, int *best_
     for (int i = 0; i < lm_index; i++) {
         make_move(origin_board, legal_moves[i][0], legal_moves[i][1], player, moves_origins);
         int score = minimax(depth-1, origin_board, get_opponent(player), false, 10000, -10000);
-        if (score > best_score && rand() % 2 == 0) {
+        if(score == best_score && rand() % 2 == 0) {
+            best_score = score;
+            *best_x = legal_moves[i][0];
+            *best_y = legal_moves[i][1];
+        }
+        else if (score > best_score) {
             best_score = score;
             *best_x = legal_moves[i][0];
             *best_y = legal_moves[i][1];
