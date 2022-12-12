@@ -85,8 +85,8 @@ int evaluation(char game_board[8][8], char player) {
     int lm_index = compute_legal_moves(game_board, player, legal_moves, moves_origins); // Nombre de coup possible (ie. mobilité)
     int force_score = force_measurement(game_board, player);
     int pieces_win = get_score(game_board, player);
-    int score = force_score + 2*(lm_index-1) + 1*pieces_win;
-    return score;
+    float pieces_onboard = (get_score(game_board, player) + get_score(game_board, get_opponent(player)))/64;
+    return pieces_onboard*force_score + (1-pieces_onboard)*(lm_index-1) + pieces_onboard*pieces_win;
 }
 
 int minimax(int depth, char node[8][8], char player, bool maximizingPlayer, int alpha, int beta, int *nb_nodes) {
