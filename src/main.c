@@ -5,6 +5,7 @@
 #include "artificial_intelligence/artificial_intelligence.h"
 #include "legal_moves/legal_moves.h"
 #include "network/userNetwork.h"
+#include "network/network.h"
 #include <time.h>
 #include <stdlib.h>
 
