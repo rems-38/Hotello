@@ -201,7 +201,21 @@ char aivserver(game *g, char game_board[8][8]) {
 	// fin de partie 
 	printf("Final game status = %d\n",g->state); 
 	freeGameOthello(g);
+    if(get_score(game_board, 'X') == get_score(game_board, 'O')) return 'N';
+    return get_score(game_board, 'X') > get_score(game_board, 'O') ? 'X' : 'O';
+}
 
+char aivjava(char game_board[8][8]) {
+    int newsocket;
+    init_socket(&newsocket);
+    if (rand() % 2 == 0) {
+        player = 'X';
+    }
+    else {
+        player = 'O';
+    }
+    send_game_data(&newsocket, get_opponent(player));
+    if(get_score(game_board, 'X') == get_score(game_board, 'O')) return 'N';
     return get_score(game_board, 'X') > get_score(game_board, 'O') ? 'X' : 'O';
 }
 
@@ -212,8 +226,9 @@ int main() {
     // init_game_board_from_string(game_board, "E6D6C5F4F5F6G5C4D3E3D7C6G4C3C7D8C8F3E8E7G3H4F8H2D2C2F7E1H3H5H1G6H6B8A8G7H8G8G2F2G1E2B3B4F1");
     //init_game_board_from_string(game_board, "C4E3F4C5C6B5D6F6B4B3C3D3C2G5F5D7B7E2F3D2F2D1B2G4B6A2G3G2G1B8A3F1H2A5C1E6A6A1A8H3B1C7E1A7A4H1H4H5G6G7D8E7");
     
-    printf("Winner: %c\n", aivserver(mynetgame, game_board));
+    // printf("Winner: %c\n", aivserver(mynetgame, game_board));
     // printf("Winner: %c", aivai(game_board));
+    printf("Winner: %c", aivjava(game_board));
 }
 
 
