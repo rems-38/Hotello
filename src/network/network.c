@@ -44,7 +44,11 @@ void init_socket(int *newsockfd)
 
 void send_game_data(int *newsockfd, char opponent_color) {
     // Envoi des données au client
-    int n = write(*newsockfd, &opponent_color, 1);
+    char buffer[2];
+    memset(buffer, 0, sizeof(buffer));
+    buffer[0] = opponent_color;
+    buffer[1] = '\n';
+    int n = write(*newsockfd, buffer, 2);
     if (n < 0) {
         perror("Erreur lors de l'envoi des données");
         exit(1);
@@ -55,21 +59,24 @@ void receive_move(int *newsockfd, int *move_x, int *move_y) {
     // Lecture des données envoyées par le client
     char buffer[2];
     memset(buffer, 0, sizeof(buffer));
-    int n = read(*newsockfd, buffer, sizeof(buffer) - 1);
+    int n = read(*newsockfd, buffer, sizeof(buffer));
     if (n < 0) {
         perror("Erreur lors de la lecture des données");
         exit(1);
     }
-    *move_x = buffer[0]-'A';
+    *move_x = buffer[0]-'0';
     *move_y = buffer[1]-'0';
     printf("Données reçues : %s\n", buffer);
 }
 
 void send_move(int *newsockfd, int move_x, int move_y) {
     // Envoi des données au client
-    char buffer[256];
+    char buffer[4];
     memset(buffer, 0, sizeof(buffer));
-    strcpy(buffer, "Hello world!");
+    buffer[0] = move_x + '0';
+    buffer[1] = ',';
+    buffer[2] = move_y + '0';
+    buffer[3] = '\n';
     int n = write(*newsockfd, buffer, strlen(buffer));
     if (n < 0) {
         perror("Erreur lors de l'envoi des données");

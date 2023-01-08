@@ -8,6 +8,7 @@
 #include "network/network.h"
 #include <time.h>
 #include <stdlib.h>
+#include <unistd.h> // notice this! you need it!
 
 #define cz {0,0}
 #define cz2 {1, 0}
@@ -208,13 +209,35 @@ char aivserver(game *g, char game_board[8][8]) {
 char aivjava(char game_board[8][8]) {
     int newsocket;
     init_socket(&newsocket);
+    char opponent = 'O';
     if (rand() % 2 == 0) {
-        player = 'X';
+        opponent = 'X';
     }
-    else {
-        player = 'O';
+    sleep(2);
+    printf("I am %c and server is %c\n", get_opponent(opponent), opponent);
+    send_game_data(&newsocket, opponent);
+    while (!is_win(game_board)){
+        if (player != opponent) {
+            int x = 0, y = 0;
+            print_game(game_board);
+            printf("Player %c, IA is thinking...\n", player);
+            compute_best_move(DEPTH, game_board, player, &x, &y, &nb_nodes);
+            printf("Coup que je veux jouer : (%d %d)\n", x, y);
+            printf("Nombre de noeuds : %d", nb_nodes);
+            proceed_move(game_board, player, x, y);
+            print_game(game_board);
+            send_move(&newsocket, x, y);
+            nb_nodes = 0;
+            player = get_opponent(player);
+        } else {
+            printf("Waiting client...\n");
+            int x, y;
+            receive_move(&newsocket, &x, &y);
+            proceed_move(game_board, player, x, y);
+            player = get_opponent(player);
+        }
     }
-    send_game_data(&newsocket, get_opponent(player));
+
     if(get_score(game_board, 'X') == get_score(game_board, 'O')) return 'N';
     return get_score(game_board, 'X') > get_score(game_board, 'O') ? 'X' : 'O';
 }
