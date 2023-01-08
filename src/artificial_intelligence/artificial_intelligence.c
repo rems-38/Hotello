@@ -13,15 +13,17 @@
 #define e_bline {0,0,0,0,0,0,0,0}
 #define e_board {e_bline, e_bline, e_bline, e_bline, e_bline, e_bline, e_bline, e_bline}
 
+int played_moves = 0;
+
 int force_array[8][8] = {
-            {100 , -10 , 8  ,  6 ,  6 , 8  , -10 ,  100},
-            {-10 , -25 ,  -4, -4 , -4 , -4 , -25 , -10 },
+            {200 , -10 , 8  ,  6 ,  6 , 8  , -10 ,  200},
+            {-10 , -30 ,  -4, -4 , -4 , -4 , -30 , -10 },
             {8   ,  -4 ,   6,   4,   4,   6,  -4 ,  8  },
             {6   ,  -4 ,   4,   0,   0,   4,  -4 ,  6  },
             {6   ,  -4 ,   4,   0,   0,   4,  -4 ,  6  },
             {8   ,  -4 ,   6,   4,   4,   6,  -4 ,  8  },
-            {-10 , -25 ,  -4, -4 , -4 , -4 , -25 , -10 },
-            {100 , -10 , 8  ,  6 ,  6 , 8  , -10 ,  100}
+            {-10 , -30 ,  -4, -4 , -4 , -4 , -30 , -10 },
+            {200 , -10 , 8  ,  6 ,  6 , 8  , -10 ,  200}
         };
 
 
@@ -63,7 +65,6 @@ int stability(char game_board[8][8], char player) {
         for(int y = 0; y < 8; y++) {
             for(int x = 0; x < 8; x++) {
                 if(game_board[y][x] == player) {
-                    
                         bool is_stable = true;
                         for(int dir_y = -1; dir_y <= 1; dir_y++) {
                             for(int dir_x = -1; dir_x <= 1; dir_x++) {
@@ -74,8 +75,7 @@ int stability(char game_board[8][8], char player) {
                                 }
                             }
                         }
-                        if(is_stable) stability += 100;
-                    
+                        if(is_stable) stability += 10;
                 }
             }
         }
@@ -89,17 +89,29 @@ int evaluation(char game_board[8][8], char player) {
     int legal_moves[64][2] = e_lm;
     int moves_origins[8][8][9][2] = e_movorigin;
 
-    int mobility = compute_legal_moves(game_board, player, legal_moves, moves_origins); // Nombre de coup possible (ie. mobilité)
-    int force_score = force_measurement(game_board, player);
-    int pieces_win = get_score(game_board, player);
+    // Tester pour voir le meilleur des deux
+    //float game_progress = (get_score(game_board, player) + get_score(game_board, get_opponent(player)))/64; // Représente l'avencement de la partie (pourcentage de pièces sur le plateau)
+    float game_progress = played_moves/64; // Représente l'avencement de la partie (pourcentage de coups joués)
+
+    int my_mobility = compute_legal_moves(game_board, player, legal_moves, moves_origins); // Nombre de coup possible (ie. mobilité)
+    int op_mobility = compute_legal_moves(game_board, get_opponent(player), legal_moves, moves_origins); // Mobilité de l'adversaire
+    int mobility_score = game_progress > 0.5 ? 0 : 100*(my_mobility - op_mobility)/(my_mobility + op_mobility + 1); // Score de mobilité
+
+    int my_force_score = force_measurement(game_board, player); // Force du plateau (somme des forces des pièces)
+    int op_force_score = force_measurement(game_board, get_opponent(player));
+    int force_score = my_force_score - op_force_score;
+
+    int my_pieces_score = get_score(game_board, player);
+    int op_pieces_score = get_score(game_board, get_opponent(player));
+    int pieces_score = game_progress < 0.7 ? 0 : 100*(my_pieces_score - op_pieces_score)/(my_pieces_score + op_pieces_score + 1); // Score de pièces
 
     int my_stab_score = stability(game_board, player);
     int opponent_stab_score = stability(game_board, get_opponent(player));
-    int stability_score = 100*(my_stab_score - opponent_stab_score)/(my_stab_score + opponent_stab_score + 1);
+    int stability_score = game_progress < 0.2 ? 0 : 100*(my_stab_score - opponent_stab_score)/(my_stab_score + opponent_stab_score + 1);
 
-    float pieces_onboard = (get_score(game_board, player) + get_score(game_board, get_opponent(player)))/64; // Représente l'avencement de la partie (pourcentage de pièces sur le plateau)
+    
 
-    return force_score + (2-pieces_onboard)*(mobility) + (pieces_onboard/2)*pieces_win + stability_score;
+    return force_score + 1.5*mobility_score + pieces_score + 1.5*stability_score;
 }
 
 int minimax(int depth, char node[8][8], char player, bool maximizingPlayer, int alpha, int beta, int *nb_nodes) {
@@ -151,9 +163,10 @@ bool killer_move_check(char game_board[8][8], char player, int x, int y) {
 }
 
 
-void compute_best_move(int depth, char game_board[8][8], char player, int *best_x, int *best_y, int *nb_nodes) {
+void compute_best_move(int depth, char game_board[8][8], char player, int *best_x, int *best_y, int *nb_nodes, int playedmoves) {
     int legal_moves[64][2] = e_lm;
     int moves_origins[8][8][9][2] = e_movorigin;
+    played_moves = playedmoves;
     
     int best_score = -10000;
     char origin_board[8][8] = e_board;
