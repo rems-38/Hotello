@@ -19,7 +19,7 @@
 #define e_bline {0,0,0,0,0,0,0,0}
 #define e_board {e_bline, e_bline, e_bline, e_bline, e_bline, e_bline, e_bline, e_bline}
 
-char game_board[8][8];
+char game_board[8][8] = e_board;
 char player = 'O';
 int nb_nodes = 0;
 
@@ -205,17 +205,15 @@ char aivserver(game *g, char game_board[8][8]) {
 }
 
 
-// Trying to play against 
-char aivjava(char game_board[8][8]) {
-    int newsocket;
-    init_socket(&newsocket);
-    char opponent = 'O';
-    if (rand() % 2 == 0) {
-        opponent = 'X';
-    }
-    sleep(2);
-    printf("I am %c and client is %c\n", get_opponent(opponent), opponent);
-    send_game_data(&newsocket, opponent);
+// Trying to play against https://github.com/vmoucadeau/Reversi
+char aivjava(char game_board[8][8], char aiplayer, int *newsocket) {
+    char opponent = get_opponent(aiplayer);
+    // if (rand() % 2 == 0) {
+    //     opponent = 'X';
+    // }
+    sleep(1);
+    printf("I am %c and client is %c\n", aiplayer, opponent);
+    send_game_data(newsocket, opponent);
     while (!is_win(game_board)){
         if(!has_legal_move(game_board, player)) {
             printf("Player %c has no legal move, pass.\n", player);
@@ -228,15 +226,15 @@ char aivjava(char game_board[8][8]) {
             printf("Coup que je veux jouer : (%d %d)\n", x, y);
             printf("Nombre de noeuds : %d", nb_nodes);
             proceed_move(game_board, player, x, y);
-            sleep(0.5);
+            sleep(0.1);
             print_game(game_board);
-            send_move(&newsocket, x, y);
+            send_move(newsocket, x, y);
             nb_nodes = 0;
             player = get_opponent(player);
         } else {
             printf("Waiting client...\n");
             int x, y;
-            receive_move(&newsocket, &x, &y);
+            receive_move(newsocket, &x, &y);
             proceed_move(game_board, player, x, y);
             print_game(game_board);
             player = get_opponent(player);
@@ -247,6 +245,20 @@ char aivjava(char game_board[8][8]) {
     return get_score(game_board, 'X') > get_score(game_board, 'O') ? 'X' : 'O';
 }
 
+int get_win_rate(char game_board[8][8], char aiplayer, int nb_games) {
+    int win = 0;
+    int newsocket;
+    init_socket(&newsocket);
+    for (int i = 0; i < nb_games; i++) {
+        init_game_board(game_board);
+        char winner = aivjava(game_board, aiplayer, &newsocket);
+        if (winner == aiplayer) {
+            win++;
+        }
+        player = 'O';
+    }
+    return win;
+}
 
 int main() {
     srand(time(NULL));
@@ -256,7 +268,7 @@ int main() {
     
     // printf("Winner: %c\n", aivserver(mynetgame, game_board));
     // printf("Winner: %c", aivai(game_board));
-    printf("Winner: %c", aivjava(game_board));
+    printf("Number of wins : %d", get_win_rate(game_board, 'O', 10));
 }
 
 

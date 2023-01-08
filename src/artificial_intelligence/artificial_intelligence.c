@@ -15,12 +15,12 @@
 
 int force_array[8][8] = {
             {100 , -10 , 8  ,  6 ,  6 , 8  , -10 ,  100},
-            {-10 , -25 ,  -4, -4 , -4 , -4 , -25 , -10 },
+            {-10 , -50 ,  -4, -4 , -4 , -4 , -50 , -10 },
             {8   ,  -4 ,   6,   4,   4,   6,  -4 ,  8  },
             {6   ,  -4 ,   4,   0,   0,   4,  -4 ,  6  },
             {6   ,  -4 ,   4,   0,   0,   4,  -4 ,  6  },
             {8   ,  -4 ,   6,   4,   4,   6,  -4 ,  8  },
-            {-10 , -25 ,  -4, -4 , -4 , -4 , -25 , -10 },
+            {-10 , -50 ,  -4, -4 , -4 , -4 , -50 , -10 },
             {100 , -10 , 8  ,  6 ,  6 , 8  , -10 ,  100}
         };
 
@@ -63,7 +63,6 @@ int stability(char game_board[8][8], char player) {
         for(int y = 0; y < 8; y++) {
             for(int x = 0; x < 8; x++) {
                 if(game_board[y][x] == player) {
-                    
                         bool is_stable = true;
                         for(int dir_y = -1; dir_y <= 1; dir_y++) {
                             for(int dir_x = -1; dir_x <= 1; dir_x++) {
@@ -75,7 +74,6 @@ int stability(char game_board[8][8], char player) {
                             }
                         }
                         if(is_stable) stability += 100;
-                    
                 }
             }
         }
@@ -90,7 +88,7 @@ int evaluation(char game_board[8][8], char player) {
     int moves_origins[8][8][9][2] = e_movorigin;
 
     int mobility = compute_legal_moves(game_board, player, legal_moves, moves_origins); // Nombre de coup possible (ie. mobilité)
-    int force_score = force_measurement(game_board, player);
+    int force_score = force_measurement(game_board, player) - force_measurement(game_board, get_opponent(player));
     int pieces_win = get_score(game_board, player);
 
     int my_stab_score = stability(game_board, player);
@@ -99,7 +97,7 @@ int evaluation(char game_board[8][8], char player) {
 
     float pieces_onboard = (get_score(game_board, player) + get_score(game_board, get_opponent(player)))/64; // Représente l'avencement de la partie (pourcentage de pièces sur le plateau)
 
-    return force_score + (2-pieces_onboard)*(mobility) + (pieces_onboard/2)*pieces_win + stability_score;
+    return 1*force_score + 3*(1-pieces_onboard)*(mobility) + 1*(pieces_onboard)*pieces_win + 2*(pieces_onboard)*stability_score;
 }
 
 int minimax(int depth, char node[8][8], char player, bool maximizingPlayer, int alpha, int beta, int *nb_nodes) {
