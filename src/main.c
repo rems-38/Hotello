@@ -204,6 +204,8 @@ char aivserver(game *g, char game_board[8][8]) {
     return get_score(game_board, 'X') > get_score(game_board, 'O') ? 'X' : 'O';
 }
 
+
+// Trying to play against 
 char aivjava(char game_board[8][8]) {
     int newsocket;
     init_socket(&newsocket);
@@ -226,7 +228,7 @@ char aivjava(char game_board[8][8]) {
             printf("Coup que je veux jouer : (%d %d)\n", x, y);
             printf("Nombre de noeuds : %d", nb_nodes);
             proceed_move(game_board, player, x, y);
-            sleep(3);
+            sleep(0.5);
             print_game(game_board);
             send_move(&newsocket, x, y);
             nb_nodes = 0;
