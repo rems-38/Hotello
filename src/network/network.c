@@ -57,7 +57,7 @@ void send_game_data(int *newsockfd, char opponent_color) {
 
 void receive_move(int *newsockfd, int *move_x, int *move_y) {
     // Lecture des données envoyées par le client
-    char buffer[2];
+    char buffer[3];
     memset(buffer, 0, sizeof(buffer));
     int n = read(*newsockfd, buffer, sizeof(buffer));
     if (n < 0) {

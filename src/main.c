@@ -186,8 +186,6 @@ char aivserver(game *g, char game_board[8][8]) {
 
             compute_best_move(DEPTH, game_board, player, &x, &y, &nb_nodes);
             printf("Coup que je veux jouer : (%d %d)\n", x, y);
-            printf("Nombre de noeuds : %d", nb_nodes);
-
             proceed_move(game_board, player, x, y);
             print_game(game_board);
             g->move = y*8 + x;
@@ -214,17 +212,21 @@ char aivjava(char game_board[8][8]) {
         opponent = 'X';
     }
     sleep(2);
-    printf("I am %c and server is %c\n", get_opponent(opponent), opponent);
+    printf("I am %c and client is %c\n", get_opponent(opponent), opponent);
     send_game_data(&newsocket, opponent);
     while (!is_win(game_board)){
+        if(!has_legal_move(game_board, player)) {
+            printf("Player %c has no legal move, pass.\n", player);
+            player = get_opponent(player);
+        }
         if (player != opponent) {
             int x = 0, y = 0;
-            print_game(game_board);
             printf("Player %c, IA is thinking...\n", player);
             compute_best_move(DEPTH, game_board, player, &x, &y, &nb_nodes);
             printf("Coup que je veux jouer : (%d %d)\n", x, y);
             printf("Nombre de noeuds : %d", nb_nodes);
             proceed_move(game_board, player, x, y);
+            sleep(3);
             print_game(game_board);
             send_move(&newsocket, x, y);
             nb_nodes = 0;
@@ -234,6 +236,7 @@ char aivjava(char game_board[8][8]) {
             int x, y;
             receive_move(&newsocket, &x, &y);
             proceed_move(game_board, player, x, y);
+            print_game(game_board);
             player = get_opponent(player);
         }
     }
