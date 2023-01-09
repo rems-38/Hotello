@@ -155,7 +155,7 @@ char aivserver(game *g, char game_board[8][8]) {
 
     g->address = "192.168.130.9";
     g->userId = 6;
-    g->port = 8014;
+    g->port = 8010;
     registerGameOthello(g, "A3lg8i");
     if(startGameOthello(g) < 0) {
         printf("Erreur de lancement");
@@ -175,8 +175,14 @@ char aivserver(game *g, char game_board[8][8]) {
 
 				if (g->state == PLAYING) { 
 					printf("Received move from server %d (x=%d,y=%d)\n",g->move,g->move%8,g->move/8); 
+                    if(g->move == 64) {
+                        printf("Opponent has no legal moves, pass.\n");
+                        g->currentPlayer=!(g->currentPlayer);
+                        continue;
+                    }
                     int x = g->move%8;
                     int y = g->move/8;
+
                     proceed_move(game_board, get_opponent(player), x, y);
 				}
 			}
@@ -185,7 +191,13 @@ char aivserver(game *g, char game_board[8][8]) {
             int x = 0, y = 0;
             print_game(game_board);
             printf("Player %c, IA is thinking...\n", player);
-
+            if(!has_legal_move(game_board, player)) {
+                g->move = 64;
+                doMoveOthello(g);
+                printf("No legal moves, pass.\n");
+                g->currentPlayer=!(g->currentPlayer);  	// on change de joueur 
+                continue;
+            }
             compute_best_move(DEPTH, game_board, player, &x, &y, &nb_nodes);
             printf("Coup que je veux jouer : (%d %d)\n", x, y);
             proceed_move(game_board, player, x, y);
@@ -249,6 +261,7 @@ char aivjava(char game_board[8][8], char aiplayer, int *newsocket) {
 
 int get_win_rate(char game_board[8][8], char aiplayer, int nb_games) {
     int win = 0;
+    int nulles = 0;
     // int newsocket;
     // init_socket(&newsocket);
     for (int i = 0; i < nb_games; i++) {
@@ -258,7 +271,12 @@ int get_win_rate(char game_board[8][8], char aiplayer, int nb_games) {
         if (winner == mycolor) {
             win++;
         }
+        if(winner == 'N') {
+            nulles++;
+        }
         player = 'O';
+        printf("Number of wins : %d\n", win);
+        printf("Number of draws : %d\n", nulles);
         sleep(1);
     }
     return win;
@@ -272,7 +290,7 @@ int main() {
     
     // printf("Winner: %c\n", aivserver(mynetgame, game_board));
     // printf("Winner: %c", aivai(game_board));
-    printf("Number of wins : %d", get_win_rate(game_board, 'O', 10));
+    printf("Number of wins : %d", get_win_rate(game_board, 'O', 100));
 }
 
 

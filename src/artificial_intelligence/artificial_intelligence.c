@@ -15,12 +15,12 @@
 
 int force_array[8][8] = {
             {100 , -10 , 8  ,  6 ,  6 , 8  , -10 ,  100},
-            {-10 , -50 ,  -4, -4 , -4 , -4 , -50 , -10 },
+            {-10 , -35 ,  -4, -4 , -4 , -4 , -35 , -10 },
             {8   ,  -4 ,   6,   4,   4,   6,  -4 ,  8  },
             {6   ,  -4 ,   4,   0,   0,   4,  -4 ,  6  },
             {6   ,  -4 ,   4,   0,   0,   4,  -4 ,  6  },
             {8   ,  -4 ,   6,   4,   4,   6,  -4 ,  8  },
-            {-10 , -50 ,  -4, -4 , -4 , -4 , -50 , -10 },
+            {-10 , -35 ,  -4, -4 , -4 , -4 , -35 , -10 },
             {100 , -10 , 8  ,  6 ,  6 , 8  , -10 ,  100}
         };
 
@@ -106,7 +106,7 @@ int evaluation(char game_board[8][8], char player) {
 
     // Tester pour voir le meilleur des deux
     float game_progress = (get_score(game_board, player) + get_score(game_board, get_opponent(player)))/64; // Représente l'avencement de la partie (pourcentage de pièces sur le plateau)
-    // float game_progress = played_moves/64; // Représente l'avencement de la partie (pourcentage de coups joués)
+    // float game_progress = played_moves/64; // Représente l'avencement de la partie (pourcentage de coups joués) (c'est nul)
 
     int my_mobility = compute_legal_moves(game_board, player, legal_moves, moves_origins); // Nombre de coup possible (ie. mobilité)
     int op_mobility = compute_legal_moves(game_board, get_opponent(player), legal_moves, moves_origins); // Mobilité de l'adversaire
