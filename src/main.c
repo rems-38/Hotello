@@ -25,7 +25,7 @@ int nb_nodes = 0;
 
 game *mynetgame;
 #define BLACK 0
-#define DEPTH 7
+#define DEPTH 6
 
 char pvp(char game_board[8][8]) {
     while (!is_win(game_board)){
@@ -148,20 +148,22 @@ char aivai(char game_board[8][8]) {
     return get_score(game_board, 'X') > get_score(game_board, 'O') ? 'X' : 'O';
 }
 
+char mycolor;
 char aivserver(game *g, char game_board[8][8]) {
     int move = 0;
     g = allocateGameOthello();
 
-    g->address = "192.168.132.18";
-    g->userId = 2;
-    g->port = 8080;
-    registerGameOthello(g, "binome2");
+    g->address = "192.168.130.9";
+    g->userId = 6;
+    g->port = 8014;
+    registerGameOthello(g, "A3lg8i");
     if(startGameOthello(g) < 0) {
         printf("Erreur de lancement");
     }
 
     printf("I am player %s\n",(g->myColor==BLACK)?"black":"white"); 
     player = g->myColor==BLACK ? 'O': 'X'; // black => 'O'
+    mycolor = player;
     printf("I am %c and server is %c\n", player, get_opponent(player));
 
 	// debut de partie
@@ -247,15 +249,17 @@ char aivjava(char game_board[8][8], char aiplayer, int *newsocket) {
 
 int get_win_rate(char game_board[8][8], char aiplayer, int nb_games) {
     int win = 0;
-    int newsocket;
-    init_socket(&newsocket);
+    // int newsocket;
+    // init_socket(&newsocket);
     for (int i = 0; i < nb_games; i++) {
         init_game_board(game_board);
-        char winner = aivjava(game_board, aiplayer, &newsocket);
-        if (winner == aiplayer) {
+        // char winner = aivjava(game_board, aiplayer, &newsocket);
+        char winner = aivserver(mynetgame, game_board);
+        if (winner == mycolor) {
             win++;
         }
         player = 'O';
+        sleep(1);
     }
     return win;
 }
