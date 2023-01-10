@@ -25,7 +25,7 @@ int nb_nodes = 0;
 
 game *mynetgame;
 #define BLACK 0
-#define DEPTH 6
+#define DEPTH 7
 
 char pvp(char game_board[8][8]) {
     while (!is_win(game_board)){

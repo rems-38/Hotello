@@ -129,11 +129,13 @@ int evaluation(char game_board[8][8], char player) {
     return force_score + 1.5*mobility_score + pieces_score + 1.5*stability_score;
 }
 
-int minimax(int depth, char node[8][8], char player, bool maximizingPlayer, int alpha, int beta, int *nb_nodes) {
+int minimax(int init_depth, int depth, char node[8][8], char player, bool maximizingPlayer, int alpha, int beta, int *nb_nodes) {
     int value;
     *nb_nodes += 1;
     if (depth == 0 || is_win(node)) {
-        return evaluation(node, player);
+        if (init_depth % 2 == 0) {
+            return evaluation(node, player);
+        } else return evaluation(node, get_opponent(player));
     }
     int legal_moves[64][2] = e_lm;
     int moves_origins[8][8][9][2] = e_movorigin;
@@ -146,7 +148,7 @@ int minimax(int depth, char node[8][8], char player, bool maximizingPlayer, int 
         value = -10000;
         for (int i = 0; i < lm_index; i++) {
             make_move(node, legal_moves[i][0], legal_moves[i][1], player, moves_origins);
-            value = max(value, minimax(depth - 1, node, get_opponent(player), !maximizingPlayer, alpha, beta, nb_nodes)); // on passe au joueur suivant
+            value = max(value, minimax(init_depth, depth - 1, node, get_opponent(player), !maximizingPlayer, alpha, beta, nb_nodes)); // on passe au joueur suivant
             board_copy(origin_board, node);
             if(value >= beta) {
                 return value;
@@ -158,7 +160,7 @@ int minimax(int depth, char node[8][8], char player, bool maximizingPlayer, int 
         value = 10000;
         for (int i = 0; i < lm_index; i++) {
             make_move(node, legal_moves[i][0], legal_moves[i][1], player, moves_origins);
-            value = min(value, minimax(depth - 1, node, get_opponent(player), !maximizingPlayer, alpha, beta, nb_nodes)); // on passe au joueur suivant
+            value = min(value, minimax(init_depth, depth - 1, node, get_opponent(player), !maximizingPlayer, alpha, beta, nb_nodes)); // on passe au joueur suivant
             board_copy(origin_board, node);
             if (alpha >= value) {
                 return value;
@@ -195,7 +197,7 @@ void compute_best_move(int depth, char game_board[8][8], char player, int *best_
             *best_y = legal_moves[i][1];
             return;
         }
-        int score = minimax(depth-1, origin_board, get_opponent(player), false, -10000, 10000, nb_nodes);
+        int score = minimax(depth, depth-1, origin_board, get_opponent(player), false, -10000, 10000, nb_nodes);
         if(score == best_score && rand() % 2 == 0) {
             *best_x = legal_moves[i][0];
             *best_y = legal_moves[i][1];
