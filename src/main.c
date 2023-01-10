@@ -259,27 +259,38 @@ char aivjava(char game_board[8][8], char aiplayer, int *newsocket) {
     return get_score(game_board, 'X') > get_score(game_board, 'O') ? 'X' : 'O';
 }
 
-int get_win_rate(char game_board[8][8], char aiplayer, int nb_games) {
+void get_win_rate(char game_board[8][8], char *mode, char aiplayer, int nb_games) {
     int win = 0;
+    int def = 0;
     int nulles = 0;
-    // int newsocket;
-    // init_socket(&newsocket);
+    int newsocket;
+    init_socket(&newsocket);
+
     for (int i = 0; i < nb_games; i++) {
         init_game_board(game_board);
-        // char winner = aivjava(game_board, aiplayer, &newsocket);
-        char winner = aivserver(mynetgame, game_board);
+        char winner;
+        if (strcmp(mode, "java") == 0) {
+            winner = aivjava(game_board, aiplayer, &newsocket);
+        }
+        else if (strcmp(mode, "server") == 0) {
+            winner = aivserver(mynetgame, game_board);
+        }
+
         if (winner == mycolor) {
             win++;
-        }
+        } else def++;
+
         if(winner == 'N') {
             nulles++;
         }
-        player = 'O';
+
         printf("Number of wins : %d\n", win);
+        printf("Number of defeat : %d\n", def);
         printf("Number of draws : %d\n", nulles);
+        
+        player = 'O';
         sleep(1);
     }
-    return win;
 }
 
 int main() {
@@ -290,7 +301,8 @@ int main() {
     
     // printf("Winner: %c\n", aivserver(mynetgame, game_board));
     // printf("Winner: %c", aivai(game_board));
-    printf("Number of wins : %d", get_win_rate(game_board, 'O', 100));
+    get_win_rate(game_board, "java", 'O', 100);
+    // get_win_rate(game_board, "server", 'O', 100);
 }
 
 
