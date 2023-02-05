@@ -83,34 +83,17 @@ int stability(char game_board[8][8], char player) {
     return stability;
 }
 
-// int evaluation(char game_board[8][8], char player) {
-//     int legal_moves[64][2] = e_lm;
-//     int moves_origins[8][8][9][2] = e_movorigin;
-
-//     int mobility = compute_legal_moves(game_board, player, legal_moves, moves_origins); // Nombre de coup possible (ie. mobilité)
-//     int force_score = force_measurement(game_board, player) - force_measurement(game_board, get_opponent(player));
-//     int pieces_win = get_score(game_board, player);
-
-//     int my_stab_score = stability(game_board, player);
-//     int opponent_stab_score = stability(game_board, get_opponent(player));
-//     int stability_score = 100*(my_stab_score - opponent_stab_score)/(my_stab_score + opponent_stab_score + 1);
-
-//     float pieces_onboard = (get_score(game_board, player) + get_score(game_board, get_opponent(player)))/64; // Représente l'avencement de la partie (pourcentage de pièces sur le plateau)
-
-//     return 1*force_score + 3*(1-pieces_onboard)*(mobility) + 1*(pieces_onboard)*pieces_win + 2*(pieces_onboard)*stability_score;
-// }
 
 int evaluation(char game_board[8][8], char player) {
     int legal_moves[64][2] = e_lm;
     int moves_origins[8][8][9][2] = e_movorigin;
 
-    // Tester pour voir le meilleur des deux
     float game_progress = (get_score(game_board, player) + get_score(game_board, get_opponent(player)))/64; // Représente l'avencement de la partie (pourcentage de pièces sur le plateau)
     // float game_progress = played_moves/64; // Représente l'avencement de la partie (pourcentage de coups joués) (c'est nul)
 
     int my_mobility = compute_legal_moves(game_board, player, legal_moves, moves_origins); // Nombre de coup possible (ie. mobilité)
     int op_mobility = compute_legal_moves(game_board, get_opponent(player), legal_moves, moves_origins); // Mobilité de l'adversaire
-    int mobility_score = game_progress > 0.5 ? 0 : 100*(my_mobility - op_mobility)/(my_mobility + op_mobility + 1); // Score de mobilité
+    int mobility_score = game_progress > 0.5 ? 0 : 100*(my_mobility - op_mobility)/(my_mobility + op_mobility + 1); // Pour empêcher la division par 0
 
     int my_force_score = force_measurement(game_board, player); // Force du plateau (somme des forces des pièces)
     int op_force_score = force_measurement(game_board, get_opponent(player));

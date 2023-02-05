@@ -301,8 +301,8 @@ int main() {
     
     // printf("Winner: %c\n", aivserver(mynetgame, game_board));
     // printf("Winner: %c", aivai(game_board));
-    get_win_rate(game_board, "java", 'O', 100);
-    // get_win_rate(game_board, "server", 'O', 100);
+    // get_win_rate(game_board, "java", 'O', 100);
+    get_win_rate(game_board, "server", 'O', 100);
 }
 
 
